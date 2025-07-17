@@ -3,33 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator</title>
-    <link rel="stylesheet" href="calcstyle.css">
+    <title>Our Services - Updated</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+        }
+        .container {
+            display: flex;
+            gap: 40px;
+            width: 90%;
+            max-width: 1000px;
+            height: 500px;
+            padding: 20px;
+        }
+        .left-div {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .connector-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .center-circle {
+            width: 200px;
+            height: 200px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            position: relative;
+        }
+        .small-circle {
+            width: 80px;
+            height: 80px;
+            background-color: #4a90e2;
+            color: white;
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            text-align: center;
+            top: 50%;
+            left: 50%;
+            margin: -40px;
+            z-index: 5;
+            transform: rotate(var(--angle)) translateY(-140px) rotate(calc(-1 * var(--angle)));
+        }
+        .small-circle:hover {
+            transform: rotate(var(--angle)) translateY(-140px) rotate(calc(-1 * var(--angle))) scale(1.1);
+        }
+        .small-circle.active {
+            background-color: #d9534f;
+            transform: rotate(var(--angle)) translateY(-140px) rotate(calc(-1 * var(--angle))) scale(1.15);
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(217, 83, 79, 0.7);
+        }
+        .right-div {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .service-details {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            width: 100%;
+            height: 100%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.5s ease;
+        }
+        .service-details h2 { margin-top: 0; color: #333; }
+        .service-details p { color: #555; line-height: 1.6; }
+    </style>
 </head>
 <body>
-    <div class="calculator">
-        <input type="text" class="display" id="display" disabled>
-        <div class="buttons">
-            <button class="cl" onclick="clearDisplay()">C</button>
-            <button class="bt" onclick="appendValue('7')">7</button>
-            <button class="bt" onclick="appendValue('8')">8</button>
-            <button class="bt" onclick="appendValue('9')">9</button>
-            <button class="op" onclick="appendValue('+')">+</button>
-            <button class="bt" onclick="appendValue('4')">4</button>
-            <button class="bt" onclick="appendValue('5')">5</button>
-            <button class="bt" onclick="appendValue('6')">6</button>
-            <button class="op" onclick="appendValue('-')">-</button>
-            <button class="bt" onclick="appendValue('1')">1</button>
-            <button class="bt" onclick="appendValue('2')">2</button>
-            <button class="bt" onclick="appendValue('3')">3</button>
-            <button class="op" onclick="appendValue('*')">*</button>
-            <button class="bt" onclick="appendValue('0')">0</button>
-            <button class="bt" onclick="appendValue('00')">00</button>
-            <button class="bt" onclick="appendValue('.')">.</button>
-            <button class="op" onclick="appendValue('/')">/</button>
-            <button class="eq" onclick="calculate()">=</button>
+
+    <div class="container">
+        <div class="left-div" id="services-wheel">
+            <svg class="connector-lines" id="line-container"></svg>
+            <div class="center-circle">Our<br>Services</div>
+        </div>
+        <div class="right-div">
+            <div class="service-details" id="details-box">
+                <h2>Details</h2>
+                <p>Click a service on the left to see the details.</p>
+            </div>
         </div>
     </div>
-    <script src="calc.js"></script>
+
+    <script>
+        const services = [
+            { id: 'web', title: 'Web Development', desc: 'We build beautiful and fast websites for you.' },
+            { id: 'mobile', title: 'Mobile Apps', desc: 'We create mobile apps for Android and iOS platforms.' },
+            { id: 'design', title: 'UI/UX Design', desc: 'We create user-friendly and attractive designs.' },
+            { id: 'digital', title: 'Digital Marketing', desc: 'We offer the best services to market your products online.' },
+            { id: 'consult', title: 'Consulting', desc: 'We improve your business by providing technology-based consulting.' },
+            { id: 'cloud', title: 'Cloud Services', desc: 'We help you securely store your data using cloud technology.' }
+        ];
+
+        const wheelContainer = document.getElementById('services-wheel');
+        const lineContainer = document.getElementById('line-container');
+        const detailsBox = document.getElementById('details-box');
+        
+        let currentIndex = 0;
+        let autoRotateInterval;
+
+        const totalServices = services.length;
+        const angleIncrement = 360 / totalServices;
+
+        function drawLines() {
+            lineContainer.innerHTML = '';
+            const centerX = wheelContainer.offsetWidth / 2;
+            const centerY = wheelContainer.offsetHeight / 2;
+            const radius = 140;
+
+            services.forEach((service, index) => {
+                const angle = angleIncrement * index;
+                const angleInRad = (angle - 90) * (Math.PI / 180);
+                const endX = centerX + (radius - 40) * Math.cos(angleInRad);
+                const endY = centerY + (radius - 40) * Math.sin(angleInRad);
+
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', centerX);
+                line.setAttribute('y1', centerY);
+                line.setAttribute('x2', endX);
+                line.setAttribute('y2', endY);
+                line.setAttribute('stroke', '#cccccc');
+                line.setAttribute('stroke-width', '2');
+                
+                lineContainer.appendChild(line);
+            });
+        }
+
+        services.forEach((service, index) => {
+            const angle = angleIncrement * index;
+            const circleElement = document.createElement('div');
+            circleElement.classList.add('small-circle');
+            circleElement.id = `circle-${service.id}`;
+            circleElement.innerHTML = service.title;
+            circleElement.style.setProperty('--angle', `${angle}deg`);
+            
+            // *** Key Change Here ***
+            circleElement.onclick = () => {
+                // 1. It completely stops the current automatic rotation.
+                clearInterval(autoRotateInterval);
+
+                // 2. It immediately shows the details of the clicked circle and notes its index.
+                showDetails(service.id);
+                currentIndex = index;
+
+                // 3. It waits for 5 seconds, then resumes the rotation from that point.
+                setTimeout(() => {
+                    // After 5 seconds, it will immediately switch to the next service.
+                    rotateNext();
+
+                    // Then, the rotation will continue at the regular 3-second interval.
+                    autoRotateInterval = setInterval(rotateNext, 3000);
+                }, 5000); // 5000 milliseconds = 5 seconds
+            };
+            
+            wheelContainer.appendChild(circleElement);
+        });
+
+        function showDetails(serviceId) {
+            const selectedService = services.find(s => s.id === serviceId);
+            if (selectedService) {
+                detailsBox.innerHTML = `<h2>${selectedService.title}</h2><p>${selectedService.desc}</p>`;
+                document.querySelectorAll('.small-circle').forEach(circle => circle.classList.remove('active'));
+                document.getElementById(`circle-${serviceId}`).classList.add('active');
+            }
+        }
+
+        function rotateNext() {
+            currentIndex = (currentIndex + 1) % totalServices;
+            const nextService = services[currentIndex];
+            showDetails(nextService.id);
+        }
+
+        drawLines();
+        showDetails(services[0].id);
+        autoRotateInterval = setInterval(rotateNext, 3000);
+
+        window.onresize = drawLines;
+
+    </script>
 </body>
 </html>
