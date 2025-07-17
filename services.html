@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Service Showcase</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        :root {
+            --card-background: rgba(255, 255, 255, 0.15);
+            --text-color: #f0f0f0;
+            --shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            --border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #232526 0%, #414345 100%);
+            overflow: hidden;
+        }
+
+        .main-container {
+            display: flex;
+            width: 95%;
+            max-width: 1200px;
+            height: 90vh;
+            max-height: 700px;
+            background: var(--card-background);
+            border-radius: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            overflow: hidden;
+        }
+
+        /* Left Panel: Service Wheel */
+        .left-panel {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transition: transform 0.1s ease-out;
+            border-right: 1px solid var(--border-color);
+        }
+        
+        #wheel-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: background 0.8s ease-in-out;
+            z-index: -1;
+        }
+
+        .connector-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            mix-blend-mode: screen;
+        }
+        
+        .connector-lines line {
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 1px;
+            transition: all 0.5s ease;
+        }
+        
+        .connector-lines line.active {
+            stroke-width: 2px;
+            animation: pulse-line 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-line {
+            0%, 100% { stroke-opacity: 0.5; }
+            50% { stroke-opacity: 1; }
+        }
+
+        .center-circle {
+            width: 180px;
+            height: 180px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-color);
+            box-shadow: 0 0 20px rgba(0,0,0,0.3) inset;
+            z-index: 10;
+            position: relative;
+        }
+        
+        .small-circle {
+            width: 70px;
+            height: 70px;
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            top: 50%;
+            left: 50%;
+            margin: -35px;
+            z-index: 5;
+            transform: rotate(var(--angle)) translateY(-200px) rotate(calc(-1 * var(--angle)));
+        }
+
+        .small-circle svg {
+            width: 32px;
+            height: 32px;
+            transition: all 0.4s ease;
+        }
+        
+        .small-circle.active {
+            box-shadow: 0 0 25px var(--glow-color), 0 0 10px var(--glow-color) inset;
+            background: var(--glow-color-alpha);
+            animation: pulse-icon 2s infinite ease-in-out;
+        }
+        
+        .small-circle.active svg {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 5px white);
+        }
+
+        @keyframes pulse-icon {
+            0%, 100% { transform: rotate(var(--angle)) translateY(-200px) rotate(calc(-1 * var(--angle))) scale(1); }
+            50% { transform: rotate(var(--angle)) translateY(-200px) rotate(calc(-1 * var(--angle))) scale(1.05); }
+        }
+
+        /* Right Panel: Service Details */
+        .right-panel {
+            flex: 1;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .details-content {
+            position: relative;
+        }
+
+        .details-content h2, .details-content p {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .details-content.visible h2 {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.2s;
+        }
+        
+        .details-content.visible p {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.3s;
+        }
+
+        .details-content h2 {
+            font-size: 42px;
+            color: var(--text-color);
+            margin: 0 0 15px 0;
+            font-weight: 700;
+        }
+
+        .details-content p {
+            font-size: 16px;
+            color: #ccc;
+            line-height: 1.7;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="left-panel" id="left-panel">
+            <div id="wheel-bg"></div>
+            <svg class="connector-lines" id="line-container"></svg>
+            <div class="center-circle">Our<br>Services</div>
+        </div>
+        <div class="right-panel">
+            <div class="details-content" id="details-box">
+                <h2>Our Services</h2>
+                <p>Select a service from the wheel to learn more about what we offer.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const services = [
+                { id: 'web', title: 'Web Development', desc: 'We build beautiful, fast, and responsive websites tailored to your business needs.', color: '#3498db', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>` },
+                { id: 'mobile', title: 'Mobile Apps', desc: 'Creating intuitive and powerful mobile applications for both Android and iOS platforms.', color: '#2ecc71', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>` },
+                { id: 'design', title: 'UI/UX Design', desc: 'We focus on user-centric designs that are not only beautiful but also highly functional.', color: '#9b59b6', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>` },
+                { id: 'digital', title: 'Digital Marketing', desc: 'Boosting your online presence through SEO, social media, and targeted ad campaigns.', color: '#e67e22', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>` },
+                { id: 'consult', title: 'Consulting', desc: 'Providing expert strategic advice to help your business navigate the digital landscape.', color: '#f1c40f', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>` },
+                { id: 'cloud', title: 'Cloud Services', desc: 'Secure, scalable, and reliable cloud infrastructure solutions for your applications.', color: '#1abc9c', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>` }
+            ];
+
+            const wheelContainer = document.querySelector('.left-panel');
+            const lineContainer = document.getElementById('line-container');
+            const detailsBox = document.getElementById('details-box');
+            const wheelBg = document.getElementById('wheel-bg');
+            
+            let currentIndex = 0;
+            let autoRotateTimeout;
+
+            function init() {
+                const angleIncrement = 360 / services.length;
+                
+                services.forEach((service, index) => {
+                    const angle = angleIncrement * index;
+                    
+                    // Create Circle
+                    const circleElement = document.createElement('div');
+                    circleElement.className = 'small-circle';
+                    circleElement.id = `circle-${service.id}`;
+                    circleElement.dataset.index = index;
+                    circleElement.style.setProperty('--angle', `${angle}deg`);
+                    circleElement.innerHTML = service.icon;
+                    circleElement.onclick = () => handleItemClick(index);
+                    wheelContainer.appendChild(circleElement);
+
+                    // Create Line
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.id = `line-${service.id}`;
+                    lineContainer.appendChild(line);
+                });
+                
+                drawLines();
+                showDetails(0);
+                startAutoRotate();
+                
+                // 3D Tilt Effect
+                wheelContainer.addEventListener('mousemove', handleTilt);
+                wheelContainer.addEventListener('mouseleave', () => {
+                     wheelContainer.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)';
+                });
+                window.addEventListener('resize', drawLines);
+            }
+
+            function drawLines() {
+                const centerX = wheelContainer.offsetWidth / 2;
+                const centerY = wheelContainer.offsetHeight / 2;
+                const radius = 200;
+
+                services.forEach((service, index) => {
+                    const angle = (360 / services.length) * index;
+                    const angleInRad = (angle - 90) * (Math.PI / 180);
+                    const endX = centerX + (radius - 35) * Math.cos(angleInRad);
+                    const endY = centerY + (radius - 35) * Math.sin(angleInRad);
+                    
+                    const line = document.getElementById(`line-${service.id}`);
+                    line.setAttribute('x1', centerX);
+                    line.setAttribute('y1', centerY);
+                    line.setAttribute('x2', endX);
+                    line.setAttribute('y2', endY);
+                });
+            }
+
+            function handleItemClick(index) {
+                if (index === currentIndex) return;
+                currentIndex = index;
+                showDetails(index);
+                clearTimeout(autoRotateTimeout);
+                autoRotateTimeout = setTimeout(rotateNext, 8000); // Reset timer on click
+            }
+
+            function showDetails(index) {
+                const service = services[index];
+                
+                // Update details text
+                detailsBox.classList.remove('visible');
+                setTimeout(() => {
+                    detailsBox.innerHTML = `<h2>${service.title}</h2><p>${service.desc}</p>`;
+                    detailsBox.classList.add('visible');
+                }, 300);
+
+                // Update active states for circles and lines
+                document.querySelectorAll('.small-circle').forEach(c => c.classList.remove('active'));
+                document.querySelectorAll('.connector-lines line').forEach(l => l.classList.remove('active'));
+                
+                const activeCircle = document.getElementById(`circle-${service.id}`);
+                const activeLine = document.getElementById(`line-${service.id}`);
+                
+                activeCircle.classList.add('active');
+                activeLine.classList.add('active');
+                
+                // Update dynamic styles
+                const glowColor = service.color;
+                const glowColorAlpha = `${service.color}40`; // Add alpha for background
+                document.documentElement.style.setProperty('--glow-color', glowColor);
+                document.documentElement.style.setProperty('--glow-color-alpha', glowColorAlpha);
+                activeLine.style.stroke = glowColor;
+                
+                // Update background
+                wheelBg.style.background = `radial-gradient(circle at center, ${glowColorAlpha} 0%, transparent 70%)`;
+            }
+
+            function rotateNext() {
+                currentIndex = (currentIndex + 1) % services.length;
+                showDetails(currentIndex);
+                autoRotateTimeout = setTimeout(rotateNext, 5000); // Continue rotation
+            }
+
+            function startAutoRotate() {
+                autoRotateTimeout = setTimeout(rotateNext, 5000);
+            }
+            
+            function handleTilt(e) {
+                const { offsetWidth: width, offsetHeight: height } = wheelContainer;
+                const { offsetX: x, offsetY: y } = e;
+                
+                const rotateX = ((y / height) - 0.5) * -15; // Max 7.5deg tilt
+                const rotateY = ((x / width) - 0.5) * 15;  // Max 7.5deg tilt
+                
+                wheelContainer.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+            }
+
+            init();
+        });
+    </script>
+</body>
+</html>

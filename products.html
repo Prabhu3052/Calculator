@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative 3D Product Showcase</title>
+    <style>
+        
+
+        :root {
+            --primary-color: #6a5af9;
+            --secondary-color: #5b5f97;
+            --background-color: #f0f2f5;
+            --card-background: rgba(255, 255, 255, 0.85);
+            --text-color: #333;
+            --shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            overflow: hidden;
+        }
+
+        .main-container {
+            display: flex;
+            width: 95%;
+            max-width: 1300px;
+            height: 90vh;
+            max-height: 750px;
+            background: var(--card-background);
+            border-radius: 25px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        /* Left Panel: Product Viewer */
+        .left-panel {
+            flex: 1.2;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #viewer-bg {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background-size: cover;
+            background-position: center;
+            filter: blur(20px) brightness(0.9);
+            opacity: 0.5;
+            transition: background-image 0.7s ease-in-out;
+            z-index: -1;
+        }
+
+        .product-viewer {
+            width: 100%;
+            height: 55%;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        #main-product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease, opacity 0.6s ease;
+        }
+
+        .product-info {
+            text-align: center;
+            height: 20%;
+            overflow: hidden;
+        }
+
+        .product-info h2, .product-info p {
+            transition: transform 0.6s ease, opacity 0.6s ease;
+        }
+        
+        .product-info h2 {
+            margin: 10px 0;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .product-info p {
+            margin: 0;
+            color: var(--secondary-color);
+            font-size: 16px;
+        }
+
+        .info-enter {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        .progress-bar-container {
+            width: 80%;
+            height: 4px;
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 2px;
+            margin-top: 25px;
+        }
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+            transition: width 0.1s linear;
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .control-btn {
+            background: linear-gradient(145deg, #7b68ee, #5a4af9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(106, 90, 249, 0.4);
+        }
+
+        .control-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(106, 90, 249, 0.5);
+        }
+        
+        .control-btn svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        /* Right Panel: 3D Scroller */
+        .right-panel {
+            flex: 0.8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .scroller {
+            display: flex;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .scroller-item {
+            position: absolute;
+            left: calc(50% - 100px); /* Center the items */
+            top: calc(50% - 100px);
+            width: 200px;
+            height: 200px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease;
+        }
+
+        .scroller-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="left-panel">
+            <div id="viewer-bg"></div>
+            <div class="product-viewer">
+                <img id="main-product-image" src="" alt="Main Product">
+            </div>
+            <div class="product-info">
+                <h2 id="product-title"></h2>
+                <p id="product-description"></p>
+            </div>
+            <div class="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+            <div class="controls">
+                <button class="control-btn" id="prev-btn" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                <button class="control-btn" id="pause-play-btn" aria-label="Pause"></button>
+                <button class="control-btn" id="next-btn" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="scroller" id="product-scroller"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const products = [
+                { id: 1, title: "Modern Chair", description: "Ergonomic and stylish chair for your workspace.", image: "https://placehold.co/400x400/3498db/ffffff?text=Product+1" },
+                { id: 2, title: "Wooden Desk", description: "A minimalist desk made from solid oak.", image: "https://placehold.co/400x400/2ecc71/ffffff?text=Product+2" },
+                { id: 3, title: "Desk Lamp", description: "Brighten your desk with this adjustable lamp.", image: "https://placehold.co/400x400/f1c40f/ffffff?text=Product+3" },
+                { id: 4, title: "Bookshelf", description: "Organize your books with this modern shelf.", image: "https://placehold.co/400x400/e74c3c/ffffff?text=Product+4" },
+                { id: 5, title: "Indoor Plant", description: "Add a touch of nature to your room.", image: "https://placehold.co/400x400/9b59b6/ffffff?text=Product+5" },
+                { id: 6, title: "Smart Watch", description: "Stay connected on the go with this smart watch.", image: "https://placehold.co/400x400/1abc9c/ffffff?text=Product+6" }
+            ];
+
+            const scroller = document.getElementById('product-scroller');
+            const mainImage = document.getElementById('main-product-image');
+            const productTitle = document.getElementById('product-title');
+            const productDesc = document.getElementById('product-description');
+            const viewerBg = document.getElementById('viewer-bg');
+            const progressBar = document.getElementById('progress-bar');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const pausePlayBtn = document.getElementById('pause-play-btn');
+
+            let currentIndex = 0;
+            let isPaused = false;
+            let autoRotateTimeout;
+            let progressInterval;
+
+            const pauseIcon = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>`;
+            const playIcon = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>`;
+
+            function init() {
+                products.forEach((product, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'scroller-item';
+                    item.dataset.index = index;
+                    item.innerHTML = `<img src="${product.image}" alt="${product.title}">`;
+                    item.addEventListener('click', () => handleItemClick(index));
+                    scroller.appendChild(item);
+                });
+
+                pausePlayBtn.innerHTML = pauseIcon;
+                addEventListeners();
+                updateCarousel();
+                startAutoRotate();
+            }
+
+            function addEventListeners() {
+                pausePlayBtn.addEventListener('click', togglePause);
+                nextBtn.addEventListener('click', () => navigate(1));
+                prevBtn.addEventListener('click', () => navigate(-1));
+            }
+            
+            function handleItemClick(index) {
+                if (index === currentIndex) return;
+                currentIndex = index;
+                updateCarousel();
+                resetAutoRotate();
+            }
+
+            function navigate(direction) {
+                currentIndex = (currentIndex + direction + products.length) % products.length;
+                updateCarousel();
+                resetAutoRotate();
+            }
+
+            function updateCarousel() {
+                // Update 3D scroller items
+                const angle = 360 / products.length;
+                const items = document.querySelectorAll('.scroller-item');
+                items.forEach((item, i) => {
+                    const index = parseInt(item.dataset.index);
+                    const rotation = (index - currentIndex) * angle;
+                    const zIndex = products.length - Math.abs(index - currentIndex);
+                    
+                    // Simple 3D carousel logic
+                    const distance = 150;
+                    const angleRad = (rotation * Math.PI) / 180;
+                    const x = Math.sin(angleRad) * distance;
+                    const z = Math.cos(angleRad) * distance - distance;
+                    const scale = (z + distance) / distance * 0.7 + 0.3;
+
+                    item.style.transform = `translateX(${x}px) translateZ(${z}px) scale(${scale})`;
+                    item.style.opacity = scale > 0.5 ? '1' : '0.3';
+                    item.style.zIndex = Math.round(scale * 100);
+                });
+                
+                updateViewer();
+            }
+
+            function updateViewer() {
+                const product = products[currentIndex];
+                
+                // Fade out old info
+                mainImage.style.opacity = '0';
+                mainImage.style.transform = 'scale(1.1)';
+                productTitle.classList.add('info-enter');
+                productDesc.classList.add('info-enter');
+
+                setTimeout(() => {
+                    mainImage.src = product.image;
+                    viewerBg.style.backgroundImage = `url(${product.image})`;
+                    productTitle.textContent = product.title;
+                    productDesc.textContent = product.description;
+                    
+                    // Fade in new info
+                    mainImage.style.opacity = '1';
+                    mainImage.style.transform = 'scale(1)';
+                    productTitle.classList.remove('info-enter');
+                    productDesc.classList.remove('info-enter');
+                }, 400);
+            }
+
+            function togglePause() {
+                isPaused = !isPaused;
+                pausePlayBtn.innerHTML = isPaused ? playIcon : pauseIcon;
+                if (isPaused) {
+                    clearTimeout(autoRotateTimeout);
+                    clearInterval(progressInterval);
+                } else {
+                    startAutoRotate();
+                }
+            }
+            
+            function resetAutoRotate() {
+                clearTimeout(autoRotateTimeout);
+                clearInterval(progressInterval);
+                if (!isPaused) {
+                    startAutoRotate();
+                }
+            }
+
+            function startAutoRotate() {
+                const duration = 5000; // 5 seconds
+                let startTime = Date.now();
+                
+                clearInterval(progressInterval);
+                clearTimeout(autoRotateTimeout);
+
+                autoRotateTimeout = setTimeout(() => {
+                    navigate(1);
+                }, duration);
+                
+                progressInterval = setInterval(() => {
+                    const elapsedTime = Date.now() - startTime;
+                    const progress = (elapsedTime / duration) * 100;
+                    progressBar.style.width = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(progressInterval);
+                    }
+                }, 30);
+            }
+            
+            init();
+        });
+    </script>
+
+</body>
+</html>
