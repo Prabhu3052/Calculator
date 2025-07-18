@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Gallery - Enhanced</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="main-nav container">
+            <a href="#home" class="logo nav-trigger">PhotoFolio</a>
+            
+            <ul class="desktop-nav-links">
+                <li><a href="#home" class="nav-link nav-trigger active">Home</a></li>
+                <li><a href="#about" class="nav-link nav-trigger">About</a></li>
+                <li class="desktop-dropdown">
+                    <button class="nav-link" id="products-nav-link">Products &#9662;</button>
+                    <ul class="desktop-dropdown-menu">
+                        <li><a href="#product1" class="nav-trigger">Product 1</a></li>
+                        <li><a href="#product2" class="nav-trigger">Product 2</a></li>
+                        <li><a href="#product3" class="nav-trigger">Product 3</a></li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <div class="mobile-menu-icon" id="mobile-menu-icon">&#9776;</div>
+        </nav>
+    </header>
+    
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay">
+        <ul class="mobile-nav-links">
+            <li><a href="#home" class="nav-trigger">Home</a></li>
+            <li><a href="#about" class="nav-trigger">About</a></li>
+            <li>
+                <button id="mobile-products-toggle">Products &#9662;</button>
+                <ul class="mobile-dropdown-menu" id="mobile-dropdown-menu">
+                    <li><a href="#product1" class="nav-trigger">Product 1</a></li>
+                    <li><a href="#product2" class="nav-trigger">Product 2</a></li>
+                    <li><a href="#product3" class="nav-trigger">Product 3</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <main class="container">
+        <section id="home" class="content-section">
+            <h1 class="section-title">Our Beautiful Photographs</h1>
+            <p class="section-subtitle">See the beauty of the world through our camera's eyes. Every photograph tells a story.</p>
+            <div class="photo-grid">
+                <div class="photo-card">
+                    <img src="https://placehold.co/600x400/3498db/ffffff?text=Mountain+View" alt="Mountain View" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/ffffff?text=Image+Not+Found';">
+                    <div class="card-content">
+                        <h3 class="card-title">Mountain View</h3>
+                        <p class="card-description">Breathe in the majestic beauty of the mountains.</p>
+                        <a href="#product1" class="buy-button nav-trigger">View Collection</a>
+                    </div>
+                </div>
+                <div class="photo-card">
+                    <img src="https://placehold.co/600x400/e74c3c/ffffff?text=City+Lights" alt="City Lights" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/ffffff?text=Image+Not+Found';">
+                    <div class="card-content">
+                        <h3 class="card-title">City Lights</h3>
+                        <p class="card-description">The vibrant magic of the city's nightlife.</p>
+                        <a href="#product2" class="buy-button nav-trigger">View Collection</a>
+                    </div>
+                </div>
+                <div class="photo-card">
+                    <img src="https://placehold.co/600x400/2ecc71/ffffff?text=Beauty+of+a+Smile" alt="Portrait" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/ffffff?text=Image+Not+Found';">
+                    <div class="card-content">
+                        <h3 class="card-title">Beauty of a Smile</h3>
+                        <p class="card-description">Every face tells a unique story.</p>
+                        <a href="#product3" class="buy-button nav-trigger">View Collection</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="content-section hidden">
+            <h1 class="section-title">About Us</h1>
+            <div class="about-content">
+                <p>We are a passionate team dedicated to capturing the beauty and emotions from every corner of the world. We are delighted that our creations will adorn your homes.</p>
+            </div>
+        </section>
+
+        <section id="product1" class="content-section hidden">
+            <div class="product-detail-page">
+                <div class="product-image-gallery">
+                    <div class="main-product-image-container">
+                        <img id="main-product-image-p1" src="https://placehold.co/600x800/27ae60/ffffff?text=Nature+Photo+1" alt="Nature Photo 1" class="main-product-image">
+                        <button class="gallery-nav-button left" id="prev-image-button-p1"><</button>
+                        <button class="gallery-nav-button right" id="next-image-button-p1">></button>
+                    </div>
+                    <div class="about-product">
+                        <h2>ABOUT THIS PRODUCT</h2>
+                        <p>Surprise your loved ones with this special colorful masterpiece. Get your close to heart photos beautifully painted, framed and delivered to you anywhere in India. Drawn using professional & styling with vibrant and long lasting detail of our Digi Painting will light up your memories. The artwork after your review and approval is then printed with care to make it shine. Quality is assured with all orders that are crafted under the supervision of industry expert artists.</p>
+                        <p>Our framed products use premium quality frames and are carefully packed to ensure safe delivery. Bring your photos to life!</p>
+                    </div>
+                </div>
+
+                <div class="product-details-right">
+                    <h1>Product 1 - Nature Photograph</h1>
+                    <div class="product-rating">
+                        <span>&#9733;&#9733;&#9733;&#9733;&#9734;</span> 4.5 (2,187 Reviews)
+                    </div>
+
+                    <ul class="feature-list">
+                        <li class="feature-item">Previewed Before Print</li>
+                        <li class="feature-item">Lifetime Durability</li>
+                        <li class="feature-item">Sunlight & Water Safe Material</li>
+                    </ul>
+
+                    <div class="product-price">
+                        <span class="current-price">₹1,431</span>
+                        <span class="original-price">₹1,950</span>
+                        <span class="discount-info">Save ₹520 (27% Off)</span>
+                    </div>
+
+                    <div class="discount-banner">
+                        Get <span>10% Extra Off</span> on Your First Order! <span class="coupon-code">DMG210</span>
+                    </div>
+
+                    <div class="selection-group">
+                        <label>Frame Size <a href="#" class="compare-sizes-link" id="compare-sizes-link-p1">Compare Sizes</a></label>
+                        <div class="options-grid">
+                            <button class="option-button active" data-price="1431" data-original-price="1950">
+                                Softcopy<span class="discount-tag">On Email</span>
+                            </button>
+                            <button class="option-button" data-price="1650" data-original-price="2200">
+                                A5<span class="discount-tag">(7 x 9 in)</span>
+                            </button>
+                            <button class="option-button" data-price="1999" data-original-price="2700">
+                                A4<span class="discount-tag">(9 x 13 in)</span>
+                            </button>
+                            <button class="option-button" data-price="2500" data-original-price="3500">
+                                A3<span class="discount-tag">(13 x 18 in)</span>
+                            </button>
+                            <button class="option-button" data-price="3200" data-original-price="4800">
+                                A2<span class="discount-tag">(18 x 26 in)</span>
+                            </button>
+                            <button class="option-button" data-price="4500" data-original-price="6000">
+                                A1<span class="discount-tag">(27 x 36 in)</span>
+                            </button>
+                            <button class="option-button" data-price="5800" data-original-price="8000">
+                                A0<span class="discount-tag">(36 x 50 in)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="selection-group">
+                        <label>No. of Elements in photo</label>
+                        <div class="options-grid people-options">
+                            <button class="option-button active" data-elements="1">1 Element</button>
+                            <button class="option-button" data-elements="2">2 Elements</button>
+                            <button class="option-button" data-elements="3">3+ Elements</button>
+                        </div>
+                    </div>
+
+                    <div class="selection-group">
+                        <label>Process & Delivery Priority</label>
+                        <div class="options-grid delivery-options">
+                            <button class="option-button active" data-delivery="standard">Standard</button>
+                            <button class="option-button" data-delivery="express">Express</button>
+                        </div>
+                        <p class="delivery-estimate">Estimated delivery by <strong>29th July</strong> <a href="#" class="check-pincode-link">Check delivery pincode</a></p>
+                    </div>
+
+                    <div class="upload-photo-box">
+                        Upload Your Photo here
+                    </div>
+
+                    <button class="buy-now-button">BUY NOW</button>
+                </div>
+            </div>
+
+            <section class="customer-form-section">
+                <h2>Enter Your Address</h2>
+                <form class="customer-form" onsubmit="alert('Form Submitted!'); return false;">
+                    <div class="form-group">
+                        <label for="whatsapp-p1">WhatsApp Number:</label>
+                        <input type="tel" id="whatsapp-p1" name="whatsapp" placeholder="e.g., 9876543210" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fullName-p1">Full Name:</label>
+                        <input type="text" id="fullName-p1" name="fullName" placeholder="Your Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address-p1">Address:</label>
+                        <textarea id="address-p1" name="address" placeholder="House No., Street, Area" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="townCity-p1">Town/City:</label>
+                        <input type="text" id="townCity-p1" name="townCity" placeholder="Town / City" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state-p1">State:</label>
+                        <select id="state-p1" name="state" required>
+                            <option value="">Select State</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pincode-p1">Pincode:</label>
+                        <input type="text" id="pincode-p1" name="pincode" placeholder="Postal Code" pattern="[0-9]{6}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber-p1">Phone Number:</label>
+                        <input type="tel" id="phoneNumber-p1" name="phoneNumber" placeholder="Contact Number" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email-p1">Email ID:</label>
+                        <input type="email" id="email-p1" name="email" placeholder="Email Address">
+                    </div>
+                    <button type="submit" class="form-submit-button">Submit Address</button>
+                </form>
+            </section>
+        </section>
+
+        <section id="product2" class="content-section hidden">
+            <div class="product-detail-page">
+                <div class="product-image-gallery">
+                    <div class="main-product-image-container">
+                        <img id="main-product-image-p2" src="https://placehold.co/600x800/e74c3c/ffffff?text=Cityscape+1" alt="Cityscape 1" class="main-product-image">
+                        <button class="gallery-nav-button left" id="prev-image-button-p2"><</button>
+                        <button class="gallery-nav-button right" id="next-image-button-p2">></button>
+                    </div>
+                    <div class="about-product">
+                        <h2>ABOUT THIS PRODUCT</h2>
+                        <p>Immerse yourself in the dynamic energy of urban landscapes with our Cityscapes collection. These photographs capture the architectural marvels, bustling streets, and vibrant nightlife of cities around the globe. Each piece tells a story of modern life, light, and movement, bringing the spirit of the metropolis directly into your home.</p>
+                        <p>Our framed products are crafted using premium materials, ensuring that every detail of the cityscape is beautifully preserved. They are carefully packed to guarantee safe delivery and are designed to add a sophisticated touch to any interior space.</p>
+                    </div>
+                </div>
+
+                <div class="product-details-right">
+                    <h1>Product 2 - Cityscapes Photograph</h1>
+                    <div class="product-rating">
+                        <span>&#9733;&#9733;&#9733;&#9733;&#9734;</span> 4.7 (1,850 Reviews)
+                    </div>
+
+                    <ul class="feature-list">
+                        <li class="feature-item">Previewed Before Print</li>
+                        <li class="feature-item">Lifetime Durability</li>
+                        <li class="feature-item">Sunlight & Water Safe Material</li>
+                    </ul>
+
+                    <div class="product-price">
+                        <span class="current-price">₹1,650</span>
+                        <span class="original-price">₹2,200</span>
+                        <span class="discount-info">Save ₹550 (25% Off)</span>
+                    </div>
+
+                    <div class="discount-banner">
+                        Get <span>10% Extra Off</span> on Your First Order! <span class="coupon-code">DMG210</span>
+                    </div>
+
+                    <div class="selection-group">
+                        <label>Frame Size <a href="#" class="compare-sizes-link" id="compare-sizes-link-p2">Compare Sizes</a></label>
+                        <div class="options-grid">
+                            <button class="option-button active" data-price="1650" data-original-price="2200">
+                                Softcopy<span class="discount-tag">On Email</span>
+                            </button>
+                            <button class="option-button" data-price="1800" data-original-price="2400">
+                                A5<span class="discount-tag">(7 x 9 in)</span>
+                            </button>
+                            <button class="option-button" data-price="2150" data-original-price="2900">
+                                A4<span class="discount-tag">(9 x 13 in)</span>
+                            </button>
+                            <button class="option-button" data-price="2700" data-original-price="3800">
+                                A3<span class="discount-tag">(13 x 18 in)</span>
+                            </button>
+                            <button class="option-button" data-price="3500" data-original-price="5000">
+                                A2<span class="discount-tag">(18 x 26 in)</span>
+                            </button>
+                            <button class="option-button" data-price="4800" data-original-price="6500">
+                                A1<span class="discount-tag">(27 x 36 in)</span>
+                            </button>
+                            <button class="option-button" data-price="6200" data-original-price="8500">
+                                A0<span class="discount-tag">(36 x 50 in)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="selection-group">
+                        <label>No. of Buildings/Landmarks in photo</label>
+                        <div class="options-grid people-options">
+                            <button class="option-button active" data-elements="1">1 Landmark</button>
+                            <button class="option-button" data-elements="2">2 Landmarks</button>
+                            <button class="option-button" data-elements="3">3+ Landmarks</button>
+                        </div>
+                    </div>
+
+                    <div class="selection-group">
+                        <label>Process & Delivery Priority</label>
+                        <div class="options-grid delivery-options">
+                            <button class="option-button active" data-delivery="standard">Standard</button>
+                            <button class="option-button" data-delivery="express">Express</button>
+                        </div>
+                        <p class="delivery-estimate">Estimated delivery by <strong>29th July</strong> <a href="#" class="check-pincode-link">Check delivery pincode</a></p>
+                    </div>
+
+                    <div class="upload-photo-box">
+                        Upload Your Photo here
+                    </div>
+
+                    <button class="buy-now-button">BUY NOW</button>
+                </div>
+            </div>
+
+            <section class="customer-form-section">
+                <h2>Enter Your Address</h2>
+                <form class="customer-form" onsubmit="alert('Form Submitted!'); return false;">
+                    <div class="form-group">
+                        <label for="whatsapp-p2">WhatsApp Number:</label>
+                        <input type="tel" id="whatsapp-p2" name="whatsapp" placeholder="e.g., 9876543210" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fullName-p2">Full Name:</label>
+                        <input type="text" id="fullName-p2" name="fullName" placeholder="Your Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address-p2">Address:</label>
+                        <textarea id="address-p2" name="address" placeholder="House No., Street, Area" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="townCity-p2">Town/City:</label>
+                        <input type="text" id="townCity-p2" name="townCity" placeholder="Town / City" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state-p2">State:</label>
+                        <select id="state-p2" name="state" required>
+                            <option value="">Select State</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pincode-p2">Pincode:</label>
+                        <input type="text" id="pincode-p2" name="pincode" placeholder="Postal Code" pattern="[0-9]{6}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber-p2">Phone Number:</label>
+                        <input type="tel" id="phoneNumber-p2" name="phoneNumber" placeholder="Contact Number" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email-p2">Email ID:</label>
+                        <input type="email" id="email-p2" name="email" placeholder="Email Address">
+                    </div>
+                    <button type="submit" class="form-submit-button">Submit Address</button>
+                </form>
+            </section>
+        </section>
+
+        <section id="product3" class="content-section hidden">
+            <div class="product-detail-page">
+                <div class="product-image-gallery">
+                    <div class="main-product-image-container">
+                        <img id="main-product-image-p3" src="https://placehold.co/600x800/2ecc71/ffffff?text=Portrait+1" alt="Portrait 1" class="main-product-image">
+                        <button class="gallery-nav-button left" id="prev-image-button-p3"><</button>
+                        <button class="gallery-nav-button right" id="next-image-button-p3">></button>
+                    </div>
+                    <div class="about-product">
+                        <h2>ABOUT THIS PRODUCT</h2>
+                        <p>Our Portrait collection captures the unique essence and emotion of individuals. From candid moments to studio poses, each photograph aims to reveal the true character and story behind a face. We believe every person has a beautiful narrative, and our portraits are designed to highlight that in a timeless and artistic manner.</p>
+                        <p>Using professional techniques and high-quality equipment, our artists ensure every detail is perfectly rendered. These framed portraits are ideal for personal display or as heartfelt gifts, carefully packaged to ensure they arrive safely and ready to be cherished for years to come.</p>
+                    </div>
+                </div>
+
+                <div class="product-details-right">
+                    <h1>Product 3 - Human Portrait</h1>
+                    <div class="product-rating">
+                        <span>&#9733;&#9733;&#9733;&#9733;&#9733;</span> 4.9 (2,500 Reviews)
+                    </div>
+
+                    <ul class="feature-list">
+                        <li class="feature-item">Previewed Before Print</li>
+                        <li class="feature-item">Lifetime Durability</li>
+                        <li class="feature-item">Sunlight & Water Safe Material</li>
+                    </ul>
+
+                    <div class="product-price">
+                        <span class="current-price">₹1,999</span>
+                        <span class="original-price">₹2,800</span>
+                        <span class="discount-info">Save ₹801 (29% Off)</span>
+                    </div>
+
+                    <div class="discount-banner">
+                        Get <span>10% Extra Off</span> on Your First Order! <span class="coupon-code">DMG210</span>
+                    </div>
+
+                    <div class="selection-group">
+                        <label>Frame Size <a href="#" class="compare-sizes-link" id="compare-sizes-link-p3">Compare Sizes</a></label>
+                        <div class="options-grid">
+                            <button class="option-button active" data-price="1999" data-original-price="2800">
+                                Softcopy<span class="discount-tag">On Email</span>
+                            </button>
+                            <button class="option-button" data-price="2200" data-original-price="3000">
+                                A5<span class="discount-tag">(7 x 9 in)</span>
+                            </button>
+                            <button class="option-button" data-price="2500" data-original-price="3500">
+                                A4<span class="discount-tag">(9 x 13 in)</span>
+                            </button>
+                            <button class="option-button" data-price="3000" data-original-price="4200">
+                                A3<span class="discount-tag">(13 x 18 in)</span>
+                            </button>
+                            <button class="option-button" data-price="3800" data-original-price="5500">
+                                A2<span class="discount-tag">(18 x 26 in)</span>
+                            </button>
+                            <button class="option-button" data-price="5200" data-original-price="7000">
+                                A1<span class="discount-tag">(27 x 36 in)</span>
+                            </button>
+                            <button class="option-button" data-price="6800" data-original-price="9500">
+                                A0<span class="discount-tag">(36 x 50 in)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="selection-group">
+                        <label>No. of People in photo</label>
+                        <div class="options-grid people-options">
+                            <button class="option-button active" data-elements="1">1 Person</button>
+                            <button class="option-button" data-elements="2">2 People</button>
+                            <button class="option-button" data-elements="3">3+ People</button>
+                        </div>
+                    </div>
+
+                    <div class="selection-group">
+                        <label>Process & Delivery Priority</label>
+                        <div class="options-grid delivery-options">
+                            <button class="option-button active" data-delivery="standard">Standard</button>
+                            <button class="option-button" data-delivery="express">Express</button>
+                        </div>
+                        <p class="delivery-estimate">Estimated delivery by <strong>29th July</strong> <a href="#" class="check-pincode-link">Check delivery pincode</a></p>
+                    </div>
+
+                    <div class="upload-photo-box">
+                        Upload Your Photo here
+                    </div>
+
+                    <button class="buy-now-button">BUY NOW</button>
+                </div>
+            </div>
+
+            <section class="customer-form-section">
+                <h2>Enter Your Address</h2>
+                <form class="customer-form" onsubmit="alert('Form Submitted!'); return false;">
+                    <div class="form-group">
+                        <label for="whatsapp-p3">WhatsApp Number:</label>
+                        <input type="tel" id="whatsapp-p3" name="whatsapp" placeholder="e.g., 9876543210" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fullName-p3">Full Name:</label>
+                        <input type="text" id="fullName-p3" name="fullName" placeholder="Your Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address-p3">Address:</label>
+                        <textarea id="address-p3" name="address" placeholder="House No., Street, Area" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="townCity-p3">Town/City:</label>
+                        <input type="text" id="townCity-p3" name="townCity" placeholder="Town / City" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state-p3">State:</label>
+                        <select id="state-p3" name="state" required>
+                            <option value="">Select State</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pincode-p3">Pincode:</label>
+                        <input type="text" id="pincode-p3" name="pincode" placeholder="Postal Code" pattern="[0-9]{6}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber-p3">Phone Number:</label>
+                        <input type="tel" id="phoneNumber-p3" name="phoneNumber" placeholder="Contact Number" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email-p3">Email ID:</label>
+                        <input type="email" id="email-p3" name="email" placeholder="Email Address">
+                    </div>
+                    <button type="submit" class="form-submit-button">Submit Address</button>
+                </form>
+            </section>
+        </section>
+
+        <section id="faq" class="content-section hidden">
+            <h1 class="section-title">Frequently Asked Questions</h1>
+            <div class="info-section-content">
+                <h2>General Questions</h2>
+                <p><strong>Q: How do I place an order?</strong><br>A: To place an order, simply navigate to the product page, select your desired options, and click the "BUY NOW" button. You will then be prompted to enter your address details.</p>
+                <p><strong>Q: What payment methods do you accept?</strong><br>A: We accept various secure payment methods, including major credit/debit cards and popular digital wallets. Specific options will be displayed during checkout.</p>
+                <p><strong>Q: Can I track my order?</strong><br>A: Yes, once your order is confirmed and shipped, you will receive a tracking number via email. You can use this number to monitor your delivery status.</p>
+                <p><strong>Q: What is your return policy?</strong><br>A: We offer a satisfaction guarantee. If you are not completely happy with your purchase, please refer to our detailed return policy for instructions on returns and exchanges.</p>
+                <p><strong>Q: Do you ship internationally?</strong><br>A: Currently, we primarily ship within India. For international shipping inquiries, please contact our customer support team directly.</p>
+            </div>
+        </section>
+
+        <section id="terms-conditions" class="content-section hidden">
+            <h1 class="section-title">Terms and Conditions</h1>
+            <div class="info-section-content">
+                <h2>Agreement to Terms</h2>
+                <p>By accessing or using our services, you agree to be bound by these Terms and Conditions. Please read them carefully before proceeding with any transactions. If you do not agree to all the terms and conditions of this agreement, then you may not access the website or use any services.</p>
+                <p>We reserve the right to update, change, or replace any part of these Terms and Conditions by posting updates and changes to our website. It is your responsibility to check this page periodically for changes. Your continued use of or access to the website following the posting of any changes constitutes acceptance of those changes.</p>
+                <h2>Intellectual Property</h2>
+                <p>All content included on this site, such as text, graphics, logos, images, and digital downloads, is the property of PhotoFolio or its content suppliers and protected by international copyright laws. Unauthorized use, reproduction, or distribution of any content from this site is strictly prohibited.</p>
+                <h2>Limitation of Liability</h2>
+                <p>PhotoFolio shall not be liable for any direct, indirect, incidental, special, or consequential damages arising out of the use or inability to use our products or services. This includes, but is not limited to, damages for loss of profits, goodwill, data, or other intangible losses.</p>
+                <p>We do not guarantee that your use of our service will be uninterrupted, timely, secure, or error-free. We reserve the right to modify or discontinue the service at any time without notice.</p>
+            </div>
+        </section>
+
+        <section id="privacy-policy" class="content-section hidden">
+            <h1 class="section-title">Privacy Policy</h1>
+            <div class="info-section-content">
+                <h2>Information We Collect</h2>
+                <p>We collect personal information that you voluntarily provide to us when you register on the site, place an order, or interact with our services. This information may include your name, email address, phone number, shipping address, and payment details.</p>
+                <p>We also collect non-personal information, such as browser type, operating system, and IP address, to improve our website's functionality and user experience. This data is aggregated and used for analytical purposes.</p>
+                <h2>How We Use Your Information</h2>
+                <p>The information we collect is used to process your transactions, deliver your products, and provide customer support. We may also use your email address to send you updates about your order or promotional offers, from which you can opt out at any time.</p>
+                <p>We implement a variety of security measures to maintain the safety of your personal information. Your data is stored on secure servers and protected by industry-standard encryption technologies.</p>
+                <p>We do not sell, trade, or otherwise transfer your personally identifiable information to outside parties without your consent, except as necessary to fulfill your order or comply with legal obligations. Trusted third parties who assist us in operating our website or servicing you are bound by confidentiality agreements.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-content">
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#home" class="nav-trigger">Home</a></li>
+                    <li><a href="#about" class="nav-trigger">About Us</a></li>
+                    <li><a href="#faq" class="nav-trigger">FAQ</a></li>
+                    <li><a href="#privacy-policy" class="nav-trigger">Privacy Policy</a></li>
+                    <li><a href="#terms-conditions" class="nav-trigger">Terms & Conditions</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Our Products</h3>
+                <ul>
+                    <li><a href="#product1" class="nav-trigger">Product 1</a></li>
+                    <li><a href="#product2" class="nav-trigger">Product 2</a></li>
+                    <li><a href="#product3" class="nav-trigger">Product 3</a></li>
+                    <li><a href="#">Abstract Art</a></li>
+                    <li><a href="#">Wildlife Photography</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <address>
+                    PhotoFolio Headquarters<br>
+                    123, Main Street,<br>
+                    Anna Nagar, Madurai - 625020,<br>
+                    Tamil Nadu, India.
+                </address>
+                <p>Email: <a href="mailto:info@photofolio.com" class="contact-link">info@photofolio.com</a></p>
+                <p>Phone: <a href="tel:+919876543210" class="contact-link">+91 98765 43210</a></p>
+                <p>WhatsApp: <a href="https://wa.me/919876543210" target="_blank" class="contact-link">+91 98765 43210</a></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 PhotoFolio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <a href="#" class="back-to-top" id="back-to-top" aria-label="Back to top">&#8679;</a>
+
+    <div id="compare-sizes-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close-button">&times;</span>
+            <div class="modal-body">
+                <h2>Frame Size Comparison Guide</h2>
+                <img src="https://placehold.co/800x600/3498db/ffffff?text=Size+Comparison+Guide" alt="Frame Size Comparison Guide">
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
