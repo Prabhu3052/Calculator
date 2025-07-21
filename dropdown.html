@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Menu with Tabs</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #f0f8ff; /* Light blue for active tab bg */
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --font-family: 'Poppins', sans-serif;
+            --transition-speed: 0.3s;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Main Navbar */
+        .navbar {
+            background-color: var(--bg-color);
+            box-shadow: 0 2px 4px var(--shadow-color);
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            height: 70px;
+        }
+
+        .navbar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .navbar a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 1rem;
+            font-weight: 500;
+            display: block;
+        }
+
+        /* Dropdown Container */
+        .dropdown {
+            position: relative;
+        }
+
+        /* The Mega Menu Itself */
+        .mega-menu-content {
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 700px;
+            background: var(--bg-color);
+            box-shadow: 0 8px 16px var(--shadow-color);
+            border-radius: 8px;
+            border-top: 3px solid var(--primary-color);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease, visibility var(--transition-speed) ease;
+            
+            /* Two-column layout */
+            display: flex; 
+        }
+
+        /* Show menu on hover */
+        .dropdown:hover .mega-menu-content {
+            display: flex;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Left Sidebar for Tabs */
+        .mega-menu-sidebar {
+            width: 200px;
+            padding: 1rem;
+            border-right: 1px solid var(--border-color);
+            background-color: #fdfdfd;
+        }
+
+        .mega-menu-sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        .mega-menu-tab {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        .mega-menu-tab:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Active tab style */
+        .mega-menu-tab.active {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Right side main content area */
+        .mega-menu-main {
+            flex-grow: 1;
+            padding: 1.5rem;
+        }
+
+        /* Individual content panes */
+        .mega-menu-pane {
+            display: none; /* Hide all panes by default */
+        }
+
+        .mega-menu-pane.active {
+            display: block; /* Show only the active pane */
+        }
+        
+        .mega-menu-pane h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+        
+        .mega-menu-pane ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Two columns for links */
+            gap: 10px;
+        }
+
+        .mega-menu-pane a {
+            padding: 8px 0;
+            color: #555;
+            transition: color var(--transition-speed) ease;
+        }
+        
+        .mega-menu-pane a:hover {
+            color: var(--primary-color);
+        }
+
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <ul>
+        <li><a href="#">Home</a></li>
+        <li class="dropdown">
+            <a href="#">What We Do <i class="fas fa-chevron-down" style="font-size: 0.7em;"></i></a>
+            <div class="mega-menu-content">
+                <div class="mega-menu-sidebar">
+                    <ul>
+                        <li><a class="mega-menu-tab active" data-target="services">
+                            <i class="fas fa-cogs"></i> Services
+                        </a></li>
+                        <li><a class="mega-menu-tab" data-target="products">
+                            <i class="fas fa-box-open"></i> Products
+                        </a></li>
+                        <li><a class="mega-menu-tab" data-target="courses">
+                            <i class="fas fa-graduation-cap"></i> Course
+                        </a></li>
+                    </ul>
+                </div>
+
+                <div class="mega-menu-main">
+                    <div id="services" class="mega-menu-pane active">
+                        <h3>Our Services</h3>
+                        <ul>
+                            <li><a href="#">Cloud Solutions</a></li>
+                            <li><a href="#">Cyber Security</a></li>
+                            <li><a href="#">AI & Machine Learning</a></li>
+                            <li><a href="#">Web Development</a></li>
+                            <li><a href="#">Mobile App Dev</a></li>
+                            <li><a href="#">Data Analytics</a></li>
+                        </ul>
+                    </div>
+                    <div id="products" class="mega-menu-pane">
+                        <h3>Our Products</h3>
+                        <ul>
+                            <li><a href="#">Project Management Tool</a></li>
+                            <li><a href="#">CRM Software</a></li>
+                            <li><a href="#">Inventory System</a></li>
+                            <li><a href="#">Billing Software</a></li>
+                        </ul>
+                    </div>
+                    <div id="courses" class="mega-menu-pane">
+                        <h3>Our Courses</h3>
+                        <ul>
+                            <li><a href="#">Full-Stack Development</a></li>
+                            <li><a href="#">Data Science with Python</a></li>
+                            <li><a href="#">Digital Marketing</a></li>
+                            <li><a href="#">UI/UX Design</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            </li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact</a></li>
+    </ul>
+</nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabs = document.querySelectorAll('.mega-menu-tab');
+        const panes = document.querySelectorAll('.mega-menu-pane');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                // 1. Remove active class from all tabs and panes
+                tabs.forEach(item => item.classList.remove('active'));
+                panes.forEach(pane => pane.classList.remove('active'));
+
+                // 2. Add active class to the clicked tab
+                tab.classList.add('active');
+
+                // 3. Add active class to the corresponding pane
+                const targetId = tab.getAttribute('data-target');
+                const targetPane = document.getElementById(targetId);
+                if (targetPane) {
+                    targetPane.classList.add('active');
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
