@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattaasu Kadai</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Body and Font Styles */
+        :root {
+            --primary-color: #ef4444; /* red-500 */
+            --primary-hover: #dc2626; /* red-600 */
+            --secondary-color: #3b82f6; /* blue-500 */
+            --gray-light: #f1f5f9;
+            --gray-mid: #e5e7eb;
+            --gray-dark: #6b7280;
+            --text-color: #1f2937;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--gray-light);
+            color: var(--text-color);
+            margin: 0;
+        }
+        .hidden { display: none !important; }
+
+        /* Main Layout */
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+        }
+        .header {
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 4rem;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .logo-icon {
+            height: 2rem;
+            width: 2rem;
+            color: var(--primary-color);
+        }
+        .header-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .navigation {
+            display: flex;
+            gap: 1rem;
+        }
+        .nav-link {
+            font-weight: 600;
+            color: var(--gray-dark);
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 0.5rem 0.75rem;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+        .nav-link.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* Admin Layout with Sidebar */
+        .admin-layout {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+        .admin-sidebar {
+            width: 220px;
+            background-color: #fff;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            flex-shrink: 0;
+        }
+        .admin-sidebar-title {
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--gray-mid);
+        }
+        .admin-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .admin-nav-link {
+            display: block;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .admin-nav-link:hover {
+            background-color: var(--gray-light);
+        }
+        .admin-nav-link.active {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+        .admin-content {
+            flex-grow: 1;
+        }
+
+        /* Card, Button, Form Styles */
+        .card {
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 1.5rem 0;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid var(--gray-mid);
+            border-radius: 0.375rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+        }
+        .button {
+            font-weight: 700;
+            padding: 0.6rem 1rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s, transform 0.1s;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+        .button:active {
+            transform: translateY(1px);
+        }
+        .button-primary { background-color: var(--primary-color); color: #ffffff; }
+        .button-primary:hover { background-color: var(--primary-hover); }
+        .button-secondary { background-color: var(--gray-dark); color: #ffffff; }
+        .button-secondary:hover { background-color: var(--text-color); }
+        .button:disabled { background-color: var(--gray-mid); cursor: not-allowed; }
+
+        /* Billing Management */
+        .billing-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+        #billing-search-results { border: 1px solid var(--gray-mid); border-radius: 0.375rem; margin-top: 0.5rem; max-height: 150px; overflow-y: auto; }
+        #billing-search-results div { padding: 8px; cursor: pointer; }
+        #billing-search-results div:hover { background-color: #f0f0f0; }
+
+        /* Bill Receipt */
+        #bill-container { border: 2px dashed var(--gray-dark); padding: 1.5rem; }
+        .bill-header { text-align: center; margin-bottom: 1.5rem; }
+        .bill-header h3 { margin: 0; font-size: 1.25rem; }
+        .bill-header p { margin: 0.25rem 0; font-size: 0.8rem; }
+        .bill-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        .bill-table th, .bill-table td { padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--gray-mid); }
+        .bill-table th { font-weight: 600; background-color: #fafafa; }
+        .bill-table .text-right { text-align: right; }
+        .bill-total { margin-top: 1.5rem; text-align: right; font-size: 1.2rem; font-weight: 700; }
+        .link-generator { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-mid); }
+        #generated-link { word-break: break-all; font-size: 0.8rem; background: var(--gray-light); padding: 0.5rem; border-radius: 0.25rem; margin-top: 0.5rem; border: 1px solid var(--gray-mid); }
+
+        /* General Table & Modal Styles */
+        .table-container { background-color: #ffffff; padding: 1rem; border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); overflow-x: auto; }
+        .custom-table { width: 100%; text-align: left; border-collapse: collapse; }
+        .custom-table thead { background-color: #f9fafb; }
+        .custom-table th, .custom-table td { padding: 0.75rem; font-size: 0.875rem; border-bottom: 1px solid var(--gray-mid); }
+        .custom-table th { font-weight: 600; }
+        .editable-price-input { width: 80px; padding: 4px; border: 1px solid var(--secondary-color); border-radius: 4px; text-align: center; }
+        .action-button { color: var(--primary-color); background: none; border: none; cursor: pointer; font-weight: 500; }
+        .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background-color: white; padding: 2rem; border-radius: 0.5rem; width: 90%; max-width: 500px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; }
+        #image-preview { margin-top: 1rem; width: 100px; height: 100px; object-fit: cover; border-radius: 0.375rem; border: 1px solid var(--gray-mid); }
+
+        /* Print Styles */
+        @media print {
+            body { background-color: #fff; }
+            body * { visibility: hidden; }
+            #bill-container, #bill-container * { visibility: visible; }
+            #bill-container {
+                position: absolute; left: 0; top: 0; width: 100%;
+                border: none; box-shadow: none; padding: 0; margin: 0;
+            }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048l5.962-5.962a.75.75 0 011.06 1.06l-5.962 5.962A6.75 6.75 0 0012 19.5a6.75 6.75 0 005.362-10.952l-5.962 5.962a.75.75 0 01-1.06-1.06l5.962-5.962z" /></svg>
+                    <h1 class="header-title">Pattaasu Kadai</h1>
+                </div>
+                <nav class="navigation">
+                    <button id="nav-enquiry" class="nav-link">Enquiry</button>
+                    <button id="nav-admin" class="nav-link">Admin</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="enquiry-view" class="view-section"></section>
+
+        <section id="admin-view" class="view-section">
+            <div class="admin-layout">
+                <aside class="admin-sidebar">
+                    <h3 class="admin-sidebar-title">Admin Menu</h3>
+                    <ul class="admin-nav">
+                        <li><a id="admin-nav-products" class="admin-nav-link">Products Management</a></li>
+                        <li><a id="admin-nav-billing" class="admin-nav-link">Billing Management</a></li>
+                    </ul>
+                </aside>
+                
+                <div class="admin-content">
+                    <div id="admin-products-view">
+                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h2 style="font-size: 1.5rem; font-weight: 700;">Manage Products</h2>
+                            <button id="add-product-btn" class="button button-primary">Add New Product</button>
+                        </div>
+                        <div class="table-container">
+                            <table class="custom-table">
+                                <thead><tr><th>ID</th><th>Image</th><th>Name</th><th>Tamil Name</th><th>Original Price</th><th>Offer Price</th><th>Category</th><th>Actions</th></tr></thead>
+                                <tbody id="admin-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="admin-billing-view">
+                         <div class="billing-grid">
+                            <div class="card">
+                                <h3 class="card-title">Add Items to Bill</h3>
+                                <div class="form-group">
+                                    <label for="billing-product-search" class="form-label">Search Product by Name or ID</label>
+                                    <input type="text" id="billing-product-search" class="form-input" placeholder="Type to search...">
+                                    <div id="billing-search-results"></div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: flex-end;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label for="billing-quantity" class="form-label">Quantity</label>
+                                        <input type="number" id="billing-quantity" class="form-input" value="1" min="1">
+                                    </div>
+                                    <button id="add-to-bill-btn" class="button button-primary" disabled>Add Item</button>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <h3 class="card-title">Bill Preview</h3>
+                                <div id="bill-container">
+                                    <div class="bill-header">
+                                        <h3>Pattaasu Kadai</h3>
+                                        <p id="bill-date"></p>
+                                    </div>
+                                    <table class="bill-table">
+                                        <thead><tr><th>Item</th><th>Qty</th><th class="text-right">Price</th><th class="text-right">Total</th></tr></thead>
+                                        <tbody id="bill-items-body"></tbody>
+                                    </table>
+                                    <div id="bill-total" class="bill-total">Grand Total: ₹0.00</div>
+                                </div>
+                                <div class="link-generator no-print">
+                                    <div class="form-group">
+                                        <label for="customer-phone" class="form-label">Customer Phone (for Price List Link)</label>
+                                        <input type="tel" id="customer-phone" class="form-input" placeholder="Enter 10-digit number">
+                                    </div>
+                                    <button id="generate-link-btn" class="button button-secondary" style="width: 100%;">Generate & Copy Link</button>
+                                    <p id="generated-link" class="hidden"></p>
+                                </div>
+                                <button id="print-bill-btn" class="button button-primary no-print" style="width: 100%; margin-top: 1rem;">Print Bill</button>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="product-modal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <h3 class="card-title" id="modal-title">Add New Product</h3>
+            <form id="product-form">
+                <input type="hidden" id="product-id">
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <input type="text" id="product-name" placeholder="English Name" class="form-input" required>
+                    <input type="text" id="product-tamil-name" placeholder="Tamil Name" class="form-input" required>
+                    <div>
+                        <label class="form-label">Product Image</label>
+                        <input type="file" id="product-image-upload" class="form-input" accept="image/*" required>
+                        <img id="image-preview" src="" alt="Image Preview" class="hidden">
+                    </div>
+                    <input type="number" id="product-original-price" placeholder="Original Price (₹)" class="form-input" required>
+                    <input type="number" id="product-offer-price" placeholder="Offer Price (₹)" class="form-input" required>
+                    <input type="text" id="product-category" placeholder="Category" class="form-input" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="cancel-btn" class="button button-secondary">Cancel</button>
+                    <button type="submit" id="save-btn" class="button button-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- DATA ---
+        const initialProducts = [
+             { id: 1, name: '100 Wala Garland', tamilName: '100 வாலா சரம்', originalPrice: 150, offerPrice: 135, category: 'Garlands (சரங்கள்)', image: 'https://placehold.co/100x100/ef4444/ffffff?text=Garland', priceHistory: [135] },
+            { id: 2, name: '28 Wala Giant Crackers', tamilName: '28 வாலா ஜெயின்ட்', originalPrice: 200, offerPrice: 180, category: 'Garlands (சரங்கள்)', image: 'https://placehold.co/100x100/ef4444/ffffff?text=Garland', priceHistory: [180] },
+            { id: 3, name: '5000 Wala Garland', tamilName: '5000 வாலா சரம்', originalPrice: 2500, offerPrice: 2250, category: 'Garlands (சரங்கள்)', image: 'https://placehold.co/100x100/ef4444/ffffff?text=Garland', priceHistory: [2250] },
+            { id: 4, name: 'Red Sparklers', tamilName: 'சிகப்பு மத்தாப்பு', originalPrice: 60, offerPrice: 50, category: 'Sparklers (மத்தாப்பு)', image: 'https://placehold.co/100x100/facc15/333333?text=Sparkler', priceHistory: [50] },
+            { id: 5, name: 'Green Sparklers', tamilName: 'பச்சை மத்தாப்பு', originalPrice: 60, offerPrice: 50, category: 'Sparklers (மத்தாப்பு)', image: 'https://placehold.co/100x100/facc15/333333?text=Sparkler', priceHistory: [50] }
+        ];
+
+        // --- STATE VARIABLES ---
+        let products = [];
+        let newProductImageBase64 = '';
+        let selectedProductForBill = null;
+        let currentBill = { items: [], grandTotal: 0 };
+        
+        // --- DOM Elements ---
+        const navEnquiry = document.getElementById('nav-enquiry');
+        const navAdmin = document.getElementById('nav-admin');
+        const enquiryView = document.getElementById('enquiry-view');
+        const adminView = document.getElementById('admin-view');
+        const adminNavProducts = document.getElementById('admin-nav-products');
+        const adminNavBilling = document.getElementById('admin-nav-billing');
+        const adminProductsView = document.getElementById('admin-products-view');
+        const adminBillingView = document.getElementById('admin-billing-view');
+        const adminTableBody = document.getElementById('admin-table-body');
+        const addProductBtn = document.getElementById('add-product-btn');
+
+        // Product Modal Elements
+        const productModal = document.getElementById('product-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const productForm = document.getElementById('product-form');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const imageUploadInput = document.getElementById('product-image-upload');
+        const imagePreview = document.getElementById('image-preview');
+
+        // Billing Elements
+        const productSearchInput = document.getElementById('billing-product-search');
+        const searchResultsContainer = document.getElementById('billing-search-results');
+        const quantityInput = document.getElementById('billing-quantity');
+        const addToBillBtn = document.getElementById('add-to-bill-btn');
+        const billItemsBody = document.getElementById('bill-items-body');
+        const billTotalEl = document.getElementById('bill-total');
+        const billDateEl = document.getElementById('bill-date');
+        const printBillBtn = document.getElementById('print-bill-btn');
+        const customerPhoneInput = document.getElementById('customer-phone');
+        const generateLinkBtn = document.getElementById('generate-link-btn');
+        const generatedLinkEl = document.getElementById('generated-link');
+        
+        // --- CORE FUNCTIONS ---
+        const saveProducts = () => localStorage.setItem('crackerProducts', JSON.stringify(products));
+
+        const loadData = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedData = urlParams.get('data');
+            if (sharedData) {
+                try {
+                    products = JSON.parse(atob(sharedData));
+                    document.getElementById('nav-admin').style.display = 'none';
+                    switchMainView('enquiry');
+                } catch (e) {
+                    console.error("Error parsing shared data:", e);
+                    products = JSON.parse(localStorage.getItem('crackerProducts')) || initialProducts;
+                    switchMainView('enquiry');
+                }
+            } else {
+                products = JSON.parse(localStorage.getItem('crackerProducts')) || initialProducts;
+                switchMainView('enquiry');
+            }
+        };
+
+        // --- RENDER FUNCTIONS ---
+        function renderEnquiryPage() {
+            enquiryView.innerHTML = '';
+            const header = document.createElement('div');
+            header.innerHTML = `
+                <div style="text-align:center; margin-bottom: 2rem;">
+                    <div class="logo-container" style="justify-content:center;">
+                         <svg class="logo-icon" style="height:3rem;width:3rem;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048l5.962-5.962a.75.75 0 011.06 1.06l-5.962 5.962A6.75 6.75 0 0012 19.5a6.75 6.75 0 005.362-10.952l-5.962 5.962a.75.75 0 01-1.06-1.06l5.962-5.962z" /></svg>
+                        <h1 class="header-title" style="font-size:2.25rem;">Pattaasu Kadai</h1>
+                    </div>
+                     <p style="color:var(--gray-dark); margin-top:0.5rem;">Price List</p>
+                </div>`;
+            enquiryView.appendChild(header);
+
+            const productsByCategory = products.reduce((acc, p) => ({ ...acc, [p.category]: [...(acc[p.category] || []), p] }), {});
+            Object.keys(productsByCategory).sort().forEach(category => {
+                const categoryContainer = document.createElement('div');
+                categoryContainer.innerHTML = `<h3 class="card-title" style="font-size:1.25rem; margin-bottom:1rem; border-bottom:2px solid #fee2e2; padding-bottom:0.5rem;">${category}</h3>`;
+                const tableContainer = document.createElement('div');
+                tableContainer.className = 'table-container';
+                const table = document.createElement('table');
+                table.className = 'custom-table';
+                table.innerHTML = `<thead><tr><th>Image</th><th>Name</th><th>Tamil Name</th><th>Original Price</th><th>Offer Price</th></tr></thead><tbody></tbody>`;
+                const tbody = table.querySelector('tbody');
+                productsByCategory[category].forEach(p => {
+                    let priceIndicator = '';
+                    if (p.priceHistory && p.priceHistory.length > 1) {
+                        const current = p.priceHistory[p.priceHistory.length - 1];
+                        const prev = p.priceHistory[p.priceHistory.length - 2];
+                        if (current > prev) priceIndicator = `<span style="color:var(--primary-color); margin-left:0.5rem;">↑</span>`;
+                        else if (current < prev) priceIndicator = `<span style="color:green; margin-left:0.5rem;">↓</span>`;
+                    }
+                    tbody.innerHTML += `<tr>
+                        <td><img src="${p.image}" alt="${p.name}" style="width:4rem;height:4rem;object-fit:cover;border-radius:0.375rem;" onerror="this.onerror=null;this.src='https://placehold.co/100x100/cccccc/ffffff?text=NoImg';"></td>
+                        <td>${p.name}</td><td>${p.tamilName}</td>
+                        <td style="text-decoration:line-through;color:var(--gray-dark);">₹${p.originalPrice}</td>
+                        <td style="font-weight:700;">₹${p.offerPrice}${priceIndicator}</td></tr>`;
+                });
+                tableContainer.appendChild(table);
+                categoryContainer.appendChild(tableContainer);
+                enquiryView.appendChild(categoryContainer);
+            });
+        }
+
+        function renderAdminTable() {
+            adminTableBody.innerHTML = '';
+            products.forEach(p => {
+                adminTableBody.innerHTML += `<tr data-id="${p.id}">
+                    <td>${p.id}</td>
+                    <td><img src="${p.image}" alt="${p.name}" style="width:3rem;height:3rem;object-fit:cover;border-radius:0.375rem;" onerror="this.onerror=null;this.src='https://placehold.co/100x100/cccccc/ffffff?text=NoImg';"></td>
+                    <td>${p.name}</td><td>${p.tamilName}</td><td>₹${p.originalPrice}</td>
+                    <td class="editable-price" style="cursor:pointer;font-weight:600;">₹${p.offerPrice}</td><td>${p.category}</td>
+                    <td><button class="action-button delete-btn">Delete</button></td></tr>`;
+            });
+        }
+
+        function updateBill() {
+            billItemsBody.innerHTML = '';
+            let total = 0;
+            currentBill.items.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                billItemsBody.innerHTML += `<tr><td>${item.name}</td><td>${item.quantity}</td><td class="text-right">₹${item.price.toFixed(2)}</td><td class="text-right">₹${itemTotal.toFixed(2)}</td></tr>`;
+            });
+            currentBill.grandTotal = total;
+            billTotalEl.textContent = `Grand Total: ₹${total.toFixed(2)}`;
+        }
+
+        // --- VIEW SWITCHING ---
+        function switchMainView(view) {
+            enquiryView.classList.toggle('hidden', view !== 'enquiry');
+            adminView.classList.toggle('hidden', view !== 'admin');
+            navEnquiry.classList.toggle('active', view === 'enquiry');
+            navAdmin.classList.toggle('active', view === 'admin');
+            if(view === 'admin') switchAdminView('products');
+            else renderEnquiryPage();
+        }
+
+        function switchAdminView(view) {
+            adminProductsView.classList.toggle('hidden', view !== 'products');
+            adminBillingView.classList.toggle('hidden', view !== 'billing');
+            adminNavProducts.classList.toggle('active', view === 'products');
+            adminNavBilling.classList.toggle('active', view === 'billing');
+            if (view === 'billing') resetBill();
+            else renderAdminTable();
+        }
+
+        // --- MODAL & PRODUCT MANAGEMENT ---
+        const showProductModal = () => productModal.classList.remove('hidden');
+        const hideProductModal = () => productModal.classList.add('hidden');
+
+        function handleProductFormSubmit(e) {
+            e.preventDefault();
+            const newProductData = {
+                name: document.getElementById('product-name').value,
+                tamilName: document.getElementById('product-tamil-name').value,
+                image: newProductImageBase64,
+                originalPrice: parseFloat(document.getElementById('product-original-price').value),
+                offerPrice: parseFloat(document.getElementById('product-offer-price').value),
+                category: document.getElementById('product-category').value,
+            };
+            const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+            products.push({ id: newId, ...newProductData, priceHistory: [newProductData.offerPrice] });
+            saveProducts();
+            renderAdminTable();
+            hideProductModal();
+        }
+
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                newProductImageBase64 = e.target.result;
+                imagePreview.src = newProductImageBase64;
+                imagePreview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleTableActions(e) {
+            const target = e.target;
+            const row = target.closest('tr');
+            if (!row) return;
+            const id = parseInt(row.dataset.id, 10);
+
+            if (target.classList.contains('delete-btn')) {
+                if (confirm(`Are you sure you want to delete product ID ${id}?`)) {
+                    products = products.filter(p => p.id !== id);
+                    saveProducts();
+                    renderAdminTable();
+                }
+            } else if (target.classList.contains('editable-price')) {
+                if (target.querySelector('input')) return;
+                const currentText = target.textContent;
+                const currentPrice = parseFloat(currentText.replace('₹', ''));
+                target.innerHTML = `<input type="number" value="${currentPrice}" class="editable-price-input" />`;
+                const input = target.querySelector('input');
+                input.focus();
+                const finishEditing = () => {
+                    const newValue = parseFloat(input.value);
+                    if (!isNaN(newValue) && newValue > 0) {
+                        const product = products.find(p => p.id === id);
+                        if(product.offerPrice !== newValue) {
+                            product.offerPrice = newValue;
+                            product.priceHistory.push(newValue);
+                            saveProducts();
+                        }
+                    }
+                    renderAdminTable();
+                };
+                input.addEventListener('blur', finishEditing);
+                input.addEventListener('keydown', e => e.key === 'Enter' && input.blur());
+            }
+        }
+
+        // --- BILLING FUNCTIONS ---
+        const resetBill = () => {
+            currentBill = { items: [], grandTotal: 0 };
+            updateBill();
+            billDateEl.textContent = new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+            productSearchInput.value = '';
+            quantityInput.value = 1;
+            customerPhoneInput.value = '';
+            generatedLinkEl.classList.add('hidden');
+        };
+
+        function handleProductSearch() {
+            const query = productSearchInput.value.toLowerCase();
+            searchResultsContainer.innerHTML = '';
+            if (query.length < 1) return;
+            const results = products.filter(p => p.name.toLowerCase().includes(query) || p.id.toString() === query);
+            results.slice(0, 5).forEach(p => {
+                searchResultsContainer.innerHTML += `<div data-id="${p.id}">${p.name} (₹${p.offerPrice})</div>`;
+            });
+        }
+
+        function selectProductFromSearch(e) {
+            const id = parseInt(e.target.dataset.id, 10);
+            selectedProductForBill = products.find(p => p.id === id);
+            if (selectedProductForBill) {
+                productSearchInput.value = selectedProductForBill.name;
+                searchResultsContainer.innerHTML = '';
+                addToBillBtn.disabled = false;
+            }
+        }
+
+        function addItemToBill() {
+            if (!selectedProductForBill) return;
+            const quantity = parseInt(quantityInput.value, 10);
+            const existingItem = currentBill.items.find(item => item.id === selectedProductForBill.id);
+            if (existingItem) existingItem.quantity += quantity;
+            else currentBill.items.push({ ...selectedProductForBill, quantity });
+            updateBill();
+            selectedProductForBill = null;
+            productSearchInput.value = '';
+            quantityInput.value = 1;
+            addToBillBtn.disabled = true;
+        }
+
+        // --- LINK GENERATION ---
+        function generateShareableLink() {
+            if (customerPhoneInput.value.length < 10) { alert('Please enter a valid phone number.'); return; }
+            const productDataString = JSON.stringify(products);
+            const base64Data = btoa(unescape(encodeURIComponent(productDataString))); // Handle UTF-8 characters
+            const link = `${window.location.origin}${window.location.pathname}?data=${base64Data}`;
+            generatedLinkEl.textContent = link;
+            generatedLinkEl.classList.remove('hidden');
+            navigator.clipboard.writeText(link).then(() => alert(`Link copied to clipboard!`));
+        }
+
+        // --- EVENT LISTENERS ---
+        navEnquiry.addEventListener('click', () => switchMainView('enquiry'));
+        navAdmin.addEventListener('click', () => switchMainView('admin'));
+        adminNavProducts.addEventListener('click', () => switchAdminView('products'));
+        adminNavBilling.addEventListener('click', () => switchAdminView('billing'));
+        addProductBtn.addEventListener('click', () => {
+            productForm.reset();
+            imagePreview.classList.add('hidden');
+            showProductModal();
+        });
+        cancelBtn.addEventListener('click', hideProductModal);
+        productForm.addEventListener('submit', handleProductFormSubmit);
+        imageUploadInput.addEventListener('change', handleImageUpload);
+        adminTableBody.addEventListener('click', handleTableActions);
+        
+        // Billing Listeners
+        productSearchInput.addEventListener('keyup', handleProductSearch);
+        searchResultsContainer.addEventListener('click', selectProductFromSearch);
+        addToBillBtn.addEventListener('click', addItemToBill);
+        printBillBtn.addEventListener('click', () => window.print());
+        generateLinkBtn.addEventListener('click', generateShareableLink);
+
+        // --- INITIAL LOAD ---
+        loadData();
+    });
+    </script>
+</body>
+</html>

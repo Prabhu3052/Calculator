@@ -11,7 +11,6 @@
             font-family: 'Inter', sans-serif;
             background-color: #f1f5f9;
         }
-        /* Custom styles for animations and arrows */
         .view-section {
             display: none;
             animation: fadeIn 0.5s ease-in-out;
@@ -23,13 +22,14 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .price-up {
+        /* Price increase is green with up arrow */
+        .price-increased {
             color: #22c55e; /* green-500 */
         }
-        .price-down {
+        /* Price decrease is red with down arrow */
+        .price-decreased {
             color: #ef4444; /* red-500 */
         }
-        /* Modal styles */
         .modal-backdrop {
             position: fixed;
             top: 0;
@@ -59,22 +59,36 @@
         input[type=number] {
             -moz-appearance: textfield;
         }
+        .editable-price-input {
+            width: 80px;
+            padding: 4px;
+            border: 1px solid #3b82f6;
+            border-radius: 4px;
+            text-align: center;
+        }
+         #image-preview {
+            margin-top: 1rem;
+            max-width: 100px;
+            max-height: 100px;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+        }
     </style>
 </head>
 <body class="text-gray-800">
 
-    <!-- Header -->
     <header class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <!-- Logo and Title -->
                 <div class="flex items-center space-x-3">
                     <svg class="h-8 w-8 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048l5.962-5.962a.75.75 0 011.06 1.06l-5.962 5.962A6.75 6.75 0 0012 19.5a6.75 6.75 0 005.362-10.952l-5.962 5.962a.75.75 0 01-1.06-1.06l5.962-5.962z" />
                     </svg>
                     <h1 class="text-xl font-bold text-gray-800">Pattaasu Kadai</h1>
                 </div>
-                <!-- Navigation -->
                 <nav class="flex items-center space-x-2 sm:space-x-4">
                     <button id="nav-enquiry" class="nav-link active font-semibold text-red-600 border-b-2 border-red-600 px-3 py-2">Enquiry</button>
                     <button id="nav-admin" class="nav-link text-gray-500 hover:text-red-600 font-semibold px-3 py-2">Admin</button>
@@ -84,44 +98,21 @@
     </header>
 
     <main class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <!-- Enquiry View -->
         <section id="enquiry-view" class="view-section active">
-            <h2 class="text-2xl font-bold mb-4">Products Enquiry</h2>
-            <!-- Filters -->
-            <div class="bg-white p-4 rounded-lg shadow-sm mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <input type="text" id="search-bar" placeholder="Product name vachi thedu..." class="w-full p-2 border rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500">
-                
-                <div>
-                    <label for="price-range" class="block text-sm font-medium text-gray-700">Price Range</label>
-                    <input type="range" id="price-range" min="0" max="5000" value="5000" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                    <div class="text-sm text-gray-600 mt-1">Up to ₹<span id="price-range-value">5000</span></div>
+             <div id="enquiry-header" class="text-center mb-8">
+                <div class="flex items-center justify-center space-x-4">
+                     <svg class="h-12 w-12 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048l5.962-5.962a.75.75 0 011.06 1.06l-5.962 5.962A6.75 6.75 0 0012 19.5a6.75 6.75 0 005.362-10.952l-5.962 5.962a.75.75 0 01-1.06-1.06l5.962-5.962z" />
+                    </svg>
+                    <h1 class="text-4xl font-bold text-gray-800">Pattaasu Kadai</h1>
                 </div>
-
-                <div>
-                    <label for="category-filter" class="block text-sm font-medium text-gray-700">Category</label>
-                    <select id="category-filter" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500">
-                        <option value="all">All Categories</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="sort-by" class="block text-sm font-medium text-gray-700">Sort By</label>
-                    <select id="sort-by" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500">
-                        <option value="default">Default</option>
-                        <option value="price-asc">Price: Low to High</option>
-                        <option value="price-desc">Price: High to Low</option>
-                        <option value="name-asc">Name: A to Z</option>
-                    </select>
-                </div>
+                 <p class="text-gray-600 mt-2">Price List</p>
             </div>
-
-            <!-- Products Table -->
+            
             <div id="product-list" class="space-y-6">
-                <!-- Products will be dynamically inserted here by category -->
-            </div>
+                </div>
         </section>
 
-        <!-- Admin View -->
         <section id="admin-view" class="view-section">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-bold">Admin Panel - Manage Products</h2>
@@ -131,6 +122,7 @@
                 <table class="w-full text-left">
                     <thead class="bg-gray-50">
                         <tr>
+                            <th class="p-3 font-semibold text-sm">ID</th>
                             <th class="p-3 font-semibold text-sm">Image</th>
                             <th class="p-3 font-semibold text-sm">English Name</th>
                             <th class="p-3 font-semibold text-sm">Tamil Name</th>
@@ -141,14 +133,12 @@
                         </tr>
                     </thead>
                     <tbody id="admin-table-body">
-                        <!-- Admin product rows will be inserted here -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
         </section>
     </main>
 
-    <!-- Add/Edit Product Modal -->
     <div id="product-modal" class="modal-backdrop hidden">
         <div class="modal-content">
             <h3 id="modal-title" class="text-xl font-bold mb-4">Add New Product</h3>
@@ -157,7 +147,18 @@
                 <div class="space-y-4">
                     <input type="text" id="product-name" placeholder="English Name" class="w-full p-2 border rounded-md" required>
                     <input type="text" id="product-tamil-name" placeholder="Tamil Name" class="w-full p-2 border rounded-md" required>
-                    <input type="text" id="product-image" placeholder="Image URL" class="w-full p-2 border rounded-md" required>
+                    
+                    <div>
+                        <label for="product-image-upload" class="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
+                        <input type="file" id="product-image-upload" class="w-full text-sm text-gray-500
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-red-50 file:text-red-700
+                            hover:file:bg-red-100" accept="image/*" required>
+                        <img id="image-preview" src="" alt="Image Preview" class="hidden">
+                    </div>
+
                     <input type="number" id="product-original-price" placeholder="Original Price (₹)" class="w-full p-2 border rounded-md" required>
                     <input type="number" id="product-offer-price" placeholder="Offer Price (₹)" class="w-full p-2 border rounded-md" required>
                     <input type="text" id="product-category" placeholder="Category" class="w-full p-2 border rounded-md" required>
@@ -175,8 +176,6 @@
     document.addEventListener('DOMContentLoaded', () => {
 
         // --- DATA ---
-        // Initial product data. In a real app, this would come from a server.
-        // I've added 40 products as requested.
         const initialProducts = [
             { id: 1, name: '100 Wala Garland', tamilName: '100 வாலா சரம்', originalPrice: 150, offerPrice: 135, category: 'Garlands (சரங்கள்)', image: 'https://placehold.co/100x100/ef4444/ffffff?text=Garland', priceHistory: [135] },
             { id: 2, name: '28 Wala Giant Crackers', tamilName: '28 வாலா ஜெயின்ட்', originalPrice: 200, offerPrice: 180, category: 'Garlands (சரங்கள்)', image: 'https://placehold.co/100x100/ef4444/ffffff?text=Garland', priceHistory: [180] },
@@ -221,6 +220,7 @@
         ];
 
         let products = JSON.parse(localStorage.getItem('crackerProducts')) || initialProducts;
+        let newProductImageBase64 = '';
 
         // --- DOM Elements ---
         const navEnquiry = document.getElementById('nav-enquiry');
@@ -234,11 +234,8 @@
         const modalTitle = document.getElementById('modal-title');
         const productForm = document.getElementById('product-form');
         const cancelBtn = document.getElementById('cancel-btn');
-        const searchBar = document.getElementById('search-bar');
-        const priceRange = document.getElementById('price-range');
-        const priceRangeValue = document.getElementById('price-range-value');
-        const categoryFilter = document.getElementById('category-filter');
-        const sortBy = document.getElementById('sort-by');
+        const imageUploadInput = document.getElementById('product-image-upload');
+        const imagePreview = document.getElementById('image-preview');
 
         // --- Functions ---
 
@@ -246,14 +243,14 @@
             localStorage.setItem('crackerProducts', JSON.stringify(products));
         };
 
-        const renderEnquiryList = (filteredProducts) => {
+        const renderEnquiryList = () => {
             productList.innerHTML = '';
-            if (filteredProducts.length === 0) {
-                productList.innerHTML = `<p class="text-center text-gray-500 col-span-full">No products found matching your criteria.</p>`;
+            if (products.length === 0) {
+                productList.innerHTML = `<p class="text-center text-gray-500 col-span-full">No products available.</p>`;
                 return;
             }
 
-            const productsByCategory = filteredProducts.reduce((acc, product) => {
+            const productsByCategory = products.reduce((acc, product) => {
                 (acc[product.category] = acc[product.category] || []).push(product);
                 return acc;
             }, {});
@@ -286,22 +283,25 @@
                     row.className = 'border-b border-gray-200 hover:bg-gray-50';
 
                     let priceIndicator = '';
+                    let priceClass = '';
                     if (product.priceHistory && product.priceHistory.length > 1) {
                         const currentPrice = product.priceHistory[product.priceHistory.length - 1];
                         const prevPrice = product.priceHistory[product.priceHistory.length - 2];
-                        if (currentPrice < prevPrice) {
-                            priceIndicator = `<span class="price-up ml-2">↑</span>`; // Price went down, so offer is better (up arrow)
-                        } else if (currentPrice > prevPrice) {
-                            priceIndicator = `<span class="price-down ml-2">↓</span>`; // Price went up, offer is worse (down arrow)
+                        if (currentPrice > prevPrice) { // Price Increased
+                            priceClass = 'price-increased';
+                            priceIndicator = `<span class="price-increased ml-2">↑</span>`; 
+                        } else if (currentPrice < prevPrice) { // Price Decreased
+                            priceClass = 'price-decreased';
+                            priceIndicator = `<span class="price-decreased ml-2">↓</span>`;
                         }
                     }
 
                     row.innerHTML = `
-                        <td class="p-3"><img src="${product.image}" alt="${product.name}" class="w-16 h-16 object-cover rounded-md" onerror="this.onerror=null;this.src='https://placehold.co/100x100/cccccc/ffffff?text=Error';"></td>
+                        <td class="p-3"><img src="${product.image}" alt="${product.name}" class="w-16 h-16 object-cover rounded-md" onerror="this.onerror=null;this.src='https://placehold.co/100x100/cccccc/ffffff?text=NoImg';"></td>
                         <td class="p-3 font-medium">${product.name}</td>
                         <td class="p-3">${product.tamilName}</td>
                         <td class="p-3 text-gray-500 line-through">₹${product.originalPrice}</td>
-                        <td class="p-3 font-bold text-red-600">₹${product.offerPrice} ${priceIndicator}</td>
+                        <td class="p-3 font-bold ${priceClass}">₹${product.offerPrice} ${priceIndicator}</td>
                     `;
                     tbody.appendChild(row);
                 });
@@ -318,82 +318,23 @@
                 const row = document.createElement('tr');
                 row.className = 'border-b border-gray-200 hover:bg-gray-50';
                 row.innerHTML = `
-                    <td class="p-2"><img src="${product.image}" alt="${product.name}" class="w-12 h-12 object-cover rounded-md" onerror="this.onerror=null;this.src='https://placehold.co/100x100/cccccc/ffffff?text=Error';"></td>
+                    <td class="p-2 font-semibold">${product.id}</td>
+                    <td class="p-2"><img src="${product.image}" alt="${product.name}" class="w-12 h-12 object-cover rounded-md" onerror="this.onerror=null;this.src='https://placehold.co/100x100/cccccc/ffffff?text=NoImg';"></td>
                     <td class="p-2 font-medium">${product.name}</td>
                     <td class="p-2">${product.tamilName}</td>
                     <td class="p-2">₹${product.originalPrice}</td>
-                    <td class="p-2 font-semibold">₹${product.offerPrice}</td>
+                    <td class="p-2 font-semibold editable-price" data-id="${product.id}">₹${product.offerPrice}</td>
                     <td class="p-2">${product.category}</td>
                     <td class="p-2">
-                        <div class="flex space-x-2">
-                            <button class="edit-btn text-blue-500 hover:text-blue-700" data-id="${product.id}">Edit</button>
-                            <button class="delete-btn text-red-500 hover:text-red-700" data-id="${product.id}">Delete</button>
-                        </div>
+                        <button class="delete-btn text-red-500 hover:text-red-700" data-id="${product.id}">Delete</button>
                     </td>
                 `;
                 adminTableBody.appendChild(row);
             });
-
-            // Re-attach event listeners for edit/delete buttons
-            document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', handleEdit));
+            // Re-attach event listeners for delete buttons
             document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', handleDelete));
         };
         
-        const populateFilters = () => {
-            const categories = [...new Set(products.map(p => p.category))];
-            categoryFilter.innerHTML = '<option value="all">All Categories</option>';
-            categories.sort().forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat;
-                option.textContent = cat;
-                categoryFilter.appendChild(option);
-            });
-
-            const maxPrice = Math.max(...products.map(p => p.originalPrice));
-            priceRange.max = maxPrice;
-            priceRange.value = maxPrice;
-            priceRangeValue.textContent = maxPrice;
-        };
-
-        const applyFiltersAndSort = () => {
-            let filtered = [...products];
-            
-            // Search filter
-            const searchTerm = searchBar.value.toLowerCase();
-            if (searchTerm) {
-                filtered = filtered.filter(p => 
-                    p.name.toLowerCase().includes(searchTerm) || 
-                    p.tamilName.toLowerCase().includes(searchTerm)
-                );
-            }
-
-            // Category filter
-            const category = categoryFilter.value;
-            if (category !== 'all') {
-                filtered = filtered.filter(p => p.category === category);
-            }
-
-            // Price range filter
-            const price = parseInt(priceRange.value, 10);
-            filtered = filtered.filter(p => p.offerPrice <= price);
-
-            // Sorting
-            const sortValue = sortBy.value;
-            switch(sortValue) {
-                case 'price-asc':
-                    filtered.sort((a, b) => a.offerPrice - b.offerPrice);
-                    break;
-                case 'price-desc':
-                    filtered.sort((a, b) => b.offerPrice - a.offerPrice);
-                    break;
-                case 'name-asc':
-                    filtered.sort((a, b) => a.name.localeCompare(b.name));
-                    break;
-            }
-
-            renderEnquiryList(filtered);
-        };
-
         const switchView = (view) => {
             if (view === 'admin') {
                 adminView.classList.add('active');
@@ -406,25 +347,17 @@
                 adminView.classList.remove('active');
                 navEnquiry.classList.add('active', 'text-red-600', 'border-b-2', 'border-red-600');
                 navAdmin.classList.remove('active', 'text-red-600', 'border-b-2', 'border-red-600');
-                applyFiltersAndSort();
+                renderEnquiryList();
             }
         };
 
-        const showModal = (mode, product = null) => {
+        const showModal = () => {
             productForm.reset();
-            if (mode === 'edit' && product) {
-                modalTitle.textContent = 'Edit Product';
-                document.getElementById('product-id').value = product.id;
-                document.getElementById('product-name').value = product.name;
-                document.getElementById('product-tamil-name').value = product.tamilName;
-                document.getElementById('product-image').value = product.image;
-                document.getElementById('product-original-price').value = product.originalPrice;
-                document.getElementById('product-offer-price').value = product.offerPrice;
-                document.getElementById('product-category').value = product.category;
-            } else {
-                modalTitle.textContent = 'Add New Product';
-                document.getElementById('product-id').value = '';
-            }
+            modalTitle.textContent = 'Add New Product';
+            document.getElementById('product-id').value = '';
+            newProductImageBase64 = ''; // Reset image data
+            imagePreview.classList.add('hidden');
+            imagePreview.src = '';
             productModal.classList.remove('hidden');
         };
 
@@ -434,51 +367,32 @@
 
         const handleFormSubmit = (e) => {
             e.preventDefault();
-            const id = document.getElementById('product-id').value;
+
+            if (!newProductImageBase64) {
+                alert('Please upload an image.');
+                return;
+            }
+
             const newProductData = {
                 name: document.getElementById('product-name').value,
                 tamilName: document.getElementById('product-tamil-name').value,
-                image: document.getElementById('product-image').value,
+                image: newProductImageBase64,
                 originalPrice: parseFloat(document.getElementById('product-original-price').value),
                 offerPrice: parseFloat(document.getElementById('product-offer-price').value),
                 category: document.getElementById('product-category').value,
             };
 
-            if (id) { // Editing existing product
-                const productIndex = products.findIndex(p => p.id == id);
-                if (productIndex > -1) {
-                    const oldProduct = products[productIndex];
-                    // Update price history if offer price changes
-                    if (oldProduct.offerPrice !== newProductData.offerPrice) {
-                        if (!products[productIndex].priceHistory) {
-                            products[productIndex].priceHistory = [];
-                        }
-                        products[productIndex].priceHistory.push(newProductData.offerPrice);
-                    }
-                    products[productIndex] = { ...oldProduct, ...newProductData };
-                }
-            } else { // Adding new product
-                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-                products.push({ 
-                    id: newId, 
-                    ...newProductData,
-                    priceHistory: [newProductData.offerPrice] // Start price history
-                });
-            }
+            const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+            products.push({ 
+                id: newId, 
+                ...newProductData,
+                priceHistory: [newProductData.offerPrice] // Start price history
+            });
 
             saveProducts();
             renderAdminTable();
-            applyFiltersAndSort(); // To update enquiry view if it's active
-            populateFilters(); // Update filters if a new category was added
+            renderEnquiryList();
             hideModal();
-        };
-
-        const handleEdit = (e) => {
-            const id = e.target.dataset.id;
-            const product = products.find(p => p.id == id);
-            if (product) {
-                showModal('edit', product);
-            }
         };
 
         const handleDelete = (e) => {
@@ -487,30 +401,87 @@
                 products = products.filter(p => p.id != id);
                 saveProducts();
                 renderAdminTable();
-                applyFiltersAndSort();
-                populateFilters();
+                renderEnquiryList();
             }
         };
+
+        const handlePriceEdit = (e) => {
+            if (!e.target.classList.contains('editable-price')) return;
+
+            const cell = e.target;
+            const currentText = cell.textContent;
+            const currentPrice = parseFloat(currentText.replace('₹', ''));
+            const productId = cell.dataset.id;
+
+            cell.innerHTML = ''; // Clear the cell
+
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.value = currentPrice;
+            input.className = 'editable-price-input';
+
+            input.addEventListener('blur', finishEditing);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    input.blur();
+                } else if (e.key === 'Escape') {
+                    cell.textContent = currentText; // Revert
+                }
+            });
+
+            cell.appendChild(input);
+            input.focus();
+
+            function finishEditing() {
+                const newValue = parseFloat(input.value);
+                if (!isNaN(newValue) && newValue > 0) {
+                     const productIndex = products.findIndex(p => p.id == productId);
+                     if (productIndex > -1) {
+                        const oldPrice = products[productIndex].offerPrice;
+                        if (oldPrice !== newValue) {
+                            products[productIndex].offerPrice = newValue;
+                            if (!products[productIndex].priceHistory) {
+                                products[productIndex].priceHistory = [];
+                            }
+                            products[productIndex].priceHistory.push(newValue);
+                        }
+                        saveProducts();
+                        cell.textContent = `₹${newValue}`;
+                        renderEnquiryList(); // Refresh enquiry view to show indicators
+                     } else {
+                        cell.textContent = currentText; // Revert on error
+                     }
+                } else {
+                    cell.textContent = currentText; // Revert on invalid input
+                }
+            }
+        };
+
+        const handleImageUpload = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    newProductImageBase64 = event.target.result;
+                    imagePreview.src = newProductImageBase64;
+                    imagePreview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
 
         // --- Event Listeners ---
         navEnquiry.addEventListener('click', () => switchView('enquiry'));
         navAdmin.addEventListener('click', () => switchView('admin'));
-        addProductBtn.addEventListener('click', () => showModal('add'));
+        addProductBtn.addEventListener('click', showModal);
         cancelBtn.addEventListener('click', hideModal);
         productForm.addEventListener('submit', handleFormSubmit);
-
-        // Filter event listeners
-        searchBar.addEventListener('input', applyFiltersAndSort);
-        priceRange.addEventListener('input', () => {
-            priceRangeValue.textContent = priceRange.value;
-            applyFiltersAndSort();
-        });
-        categoryFilter.addEventListener('change', applyFiltersAndSort);
-        sortBy.addEventListener('change', applyFiltersAndSort);
+        imageUploadInput.addEventListener('change', handleImageUpload);
+        adminTableBody.addEventListener('dblclick', handlePriceEdit);
 
 
         // --- Initial Load ---
-        populateFilters();
         switchView('enquiry'); // Start with enquiry view
     });
     </script>
