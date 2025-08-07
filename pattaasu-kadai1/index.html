@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattaasu Kadai</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container" style="padding: 0 1rem;"><div class="header-content"><div class="logo-container"><svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048l5.962-5.962a.75.75 0 011.06 1.06l-5.962 5.962A6.75 6.75 0 0012 19.5a6.75 6.75 0 005.362-10.952l-5.962 5.962a.75.75 0 01-1.06-1.06l5.962-5.962z" /></svg><h1 class="header-title">Pattaasu Kadai</h1></div></div></div>
+    </header>
+    <div class="main-layout">
+        <aside class="admin-sidebar">
+            <h2 class="sidebar-title">Management</h2>
+            <nav class="sidebar-nav">
+                <button id="nav-enquiry" class="nav-link active">Enquiry (Price List)</button>
+                <button id="nav-products" class="nav-link">Products Management</button>
+                <button id="nav-billing" class="nav-link">Billing Management</button>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <section id="enquiry-view" class="view-section active">
+                <div id="enquiry-header"><div class="logo-container"><svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048l5.962-5.962a.75.75 0 011.06 1.06l-5.962 5.962A6.75 6.75 0 0012 19.5a6.75 6.75 0 005.362-10.952l-5.962 5.962a.75.75 0 01-1.06-1.06l5.962-5.962z" /></svg><h1 class="header-title">Pattaasu Kadai</h1></div><p class="sub-title">Price List</p></div>
+                <div id="product-list" class="product-list-container"><p>Loading products...</p></div>
+            </section>
+            <section id="products-management-view" class="view-section">
+                <div class="admin-header">
+                    <h2 class="page-title">Manage Products</h2>
+                    <div><button id="add-product-btn" class="button button-primary">Add New Product</button><button id="save-to-db-btn" class="button button-success">Save Changes to DB</button></div>
+                </div>
+                <div class="table-container">
+                    <table class="custom-table">
+                        <thead><tr><th>ID</th><th>English Name</th><th>Tamil Name</th><th>Original Price</th><th>Offer Price</th><th>Category</th><th>Actions</th></tr></thead>
+                        <tbody id="admin-table-body"></tbody>
+                    </table>
+                </div>
+            </section>
+            <section id="billing-management-view" class="view-section">
+                <div id="billing-main-view">
+                    <div class="billing-options">
+                        <button id="new-invoice-btn" class="button button-primary button-large"><i class="fas fa-plus-circle"></i> New Invoice</button>
+                        <button id="old-invoices-btn" class="button button-secondary button-large"><i class="fas fa-history"></i> Old Invoices</button>
+                    </div>
+                </div>
+                <div id="new-invoice-creator" class="hidden">
+                    <div class="admin-header">
+                        <button id="back-to-billing-btn" class="button button-secondary"><i class="fas fa-arrow-left"></i> Back</button>
+                        <h2 class="page-title">Create New Invoice</h2>
+                    </div>
+                    <div class="invoice-layout">
+                        <div class="product-search-panel">
+                            <h4>Add Products to Bill</h4>
+                            <div class="search-container">
+                                <input type="text" id="product-search-input" placeholder="Search by Name or ID...">
+                                <button id="product-search-dropdown-btn"><i class="fas fa-chevron-down"></i></button>
+                            </div>
+                            <div id="product-search-results" class="search-results"></div>
+                        </div>
+                        <div id="invoice-paper" class="invoice-paper">
+                            <div class="invoice-header">
+                                <div class="logo-container">
+                                    <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048l5.962-5.962a.75.75 0 011.06 1.06l-5.962 5.962A6.75 6.75 0 0012 19.5a6.75 6.75 0 005.362-10.952l-5.962 5.962a.75.75 0 01-1.06-1.06l5.962-5.962z"></path></svg>
+                                    <h1 class="header-title">Pattaasu Kadai</h1>
+                                </div>
+                                <div class="invoice-details">
+                                    <div class="detail-item"><span>Bill No:</span> <span id="bill-number"></span></div>
+                                    <div class="detail-item"><span>Date:</span> <span id="bill-date"></span></div>
+                                </div>
+                            </div>
+                            <div class="customer-details">
+                                <input type="text" id="customer-name" placeholder="Customer Name">
+                                <input type="tel" id="customer-number" placeholder="Customer Phone Number">
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table invoice-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Product Name</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="invoice-items-body"></tbody>
+                                </table>
+                            </div>
+                            <div class="invoice-summary">
+                                <div class="summary-item">
+                                    <label for="bill-discount-percent">Discount (%):</label>
+                                    <input type="number" id="bill-discount-percent" value="0.00">
+                                </div>
+                                <div class="summary-item">
+                                    <span>Sub Total:</span>
+                                    <span id="bill-sub-total">₹0.00</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Discount Amount:</span>
+                                    <span id="bill-discount-amount">₹0.00</span>
+                                </div>
+                                <div class="summary-item total">
+                                    <span>Total:</span>
+                                    <span id="bill-total">₹0.00</span>
+                                </div>
+                            </div>
+                            <div id="invoice-actions" class="invoice-actions">
+                                <button id="clear-bill-btn" class="button button-secondary">Clear</button>
+                                <button id="finalize-bill-btn" class="button button-success">Finalize Bill</button>
+                            </div>
+                             <div id="finalized-actions" class="invoice-actions hidden">
+                                <button id="edit-bill-btn" class="button button-primary">Edit</button>
+                                <button id="share-bill-btn" class="button button-success">Share</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="old-invoices-list" class="hidden">
+                     <div class="admin-header">
+                        <button id="back-to-billing-from-old-btn" class="button button-secondary"><i class="fas fa-arrow-left"></i> Back</button>
+                        <h2 class="page-title">Old Invoices</h2>
+                    </div>
+                    </div>
+            </section>
+        </main>
+    </div>
+    <div id="product-modal" class="modal-backdrop hidden">
+        </div>
+    <script src="script.js"></script>
+</body>
+</html>
