@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <title>பில் எண்ணுடன் இணைப்பு</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 30px; }
+        .container { max-width: 450px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        input { width: 90%; padding: 10px; font-size: 16px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; }
+        #billNumberInput { background-color: #f2f2f2; font-weight: bold; }
+        .create-button { background-color: #e8491d; color: white; padding: 12px 25px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; }
+        .create-button.copied { background-color: #28a745; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>ரகசிய இணைப்பு உருவாக்கவும்</h2>
+        <p>பில் எண் தானாக உருவாக்கப்பட்டுள்ளது. சரிபார்க்க உங்கள் தொலைபேசி எண்ணை உள்ளிடவும்.</p>
+        
+        <label for="billNumberInput"><b>பில் எண் (Bill Number)</b></label>
+        <input type="text" id="billNumberInput" readonly>
+
+        <label for="phoneInput"><b>தொலைபேசி எண் (Phone Number)</b></label>
+        <input type="tel" id="phoneInput" placeholder="சரிபார்ப்புக்குரிய தொலைபேசி எண்">
+
+        <button id="createBtn" class="create-button">இணைப்பை உருவாக்கி நகலெடு</button>
+    </div>
+
+    <script>
+        const createButton = document.getElementById('createBtn');
+        const phoneInput = document.getElementById('phoneInput');
+        const billNumberInput = document.getElementById('billNumberInput');
+
+        // பக்கம் லோட் ஆகும் போது, ஒரு புதிய ரேண்டம் பில் எண்ணை உருவாக்கவும்
+        window.addEventListener('load', () => {
+            // ఉదాహరణకు: B-843190
+            const randomBillNumber = 'B-' + Math.floor(100000 + Math.random() * 900000);
+            billNumberInput.value = randomBillNumber;
+        });
+
+        createButton.addEventListener('click', function() {
+            const phoneNumber = phoneInput.value.trim();
+            const billNumber = billNumberInput.value;
+
+            if (phoneNumber === '') {
+                alert('சரிபார்ப்புக்கு தொலைபேசி எண்ணை உள்ளிடவும்!');
+                return;
+            }
+
+            // --- முக்கியமான படி ---
+            // பிரவுசரின் நினைவகத்தில் (localStorage) பில் எண்ணையும், தொலைபேசி எண்ணையும் சேமிக்கவும்.
+            // இங்கே பில் எண் ஒரு 'key' ஆகவும், தொலைபேசி எண் ஒரு 'value' ஆகவும் சேமிக்கப்படுகிறது.
+            localStorage.setItem(billNumber, phoneNumber);
+            // --------------------
+
+            const targetPage = 'page2.html';
+            const currentUrl = window.location.href;
+            const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1);
+
+            // இணைப்பில் பில் எண்ணை மட்டும் சேர்க்கவும் (தொலைபேசி எண் சேர்க்கப்படாது)
+            const linkToCopy = `${baseUrl}${targetPage}?bill=${encodeURIComponent(billNumber)}`;
+
+            navigator.clipboard.writeText(linkToCopy).then(() => {
+                createButton.textContent = 'வெற்றிகரமாக நகலெடுக்கப்பட்டது!';
+                createButton.classList.add('copied');
+                setTimeout(() => {
+                    createButton.textContent = 'இணைப்பை உருவாக்கி நகலெடு';
+                    createButton.classList.remove('copied');
+                }, 2500);
+            }).catch(err => {
+                console.error('Error copying link: ', err);
+                alert('மன்னிக்கவும், இணைப்பை நகலெடுக்க முடியவில்லை.');
+            });
+        });
+    </script>
+</body>
+</html>

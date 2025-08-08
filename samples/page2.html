@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <title>பாதுகாக்கப்பட்ட பக்கம்</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .modal { display: flex; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
+        .modal-content { background-color: #fefefe; padding: 25px; border: 1px solid #888; width: 80%; max-width: 350px; text-align: center; border-radius: 8px; }
+        #phoneVerifyInput { width: 80%; padding: 10px; font-size: 16px; margin: 15px 0; }
+        #verifyBtn { background-color: #28a745; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px; }
+        #errorMessage { color: red; font-weight: bold; height: 20px; }
+        #main-content { display: none; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <h2>தொலைபேசி எண்ணைச் சரிபார்க்கவும்</h2>
+            <p>இந்த பில்லுடன் இணைக்கப்பட்ட தொலைபேசி எண்ணை உள்ளிடவும்.</p>
+            <input type="tel" id="phoneVerifyInput" placeholder="Enter your phone number">
+            <button id="verifyBtn">சரிபார் (Verify)</button>
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+    <div id="main-content">
+        <h1>வரவேற்கிறோம்! 🥳</h1>
+        <p>நீங்கள் சரியான தொலைபேசி எண்ணை உள்ளிட்டதால், இந்தப் பாதுகாக்கப்பட்ட உள்ளடக்கத்தை உங்களால் பார்க்க முடிகிறது.</p>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            const authModal = document.getElementById('authModal');
+            const mainContent = document.getElementById('main-content');
+            const verifyBtn = document.getElementById('verifyBtn');
+            const phoneVerifyInput = document.getElementById('phoneVerifyInput');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // 1. இணைப்பில் (URL) இருந்து பில் எண்ணை எடுக்கவும்
+            const urlParams = new URLSearchParams(window.location.search);
+            const billNumberFromUrl = urlParams.get('bill');
+
+            if (!billNumberFromUrl) {
+                document.body.innerHTML = "<h1>❌ தவறான இணைப்பு.</h1><p>இந்த இணைப்பில் பில் எண் இல்லை.</p>";
+                return;
+            }
+
+            // --- முக்கியமான படி ---
+            // 2. பிரவுசரின் நினைவகத்தில் இருந்து, அந்த பில் எண்ணுக்கான ரகசிய தொலைபேசி எண்ணை எடுக்கவும்
+            const correctPhoneNumber = localStorage.getItem(billNumberFromUrl);
+            // --------------------
+
+            // நினைவகத்தில் அந்த பில் எண்ணுக்கு எந்த எண்ணும் சேமிக்கப்படவில்லை என்றால்...
+            if (!correctPhoneNumber) {
+                 document.body.innerHTML = "<h1>❌ இணைப்பு காலாவதியானது அல்லது தவறானது.</h1><p>இந்த இணைப்பை உருவாக்கிய அதே பிரவுசரில் திறக்க வேண்டும்.</p>";
+                return;
+            }
+
+            // 3. சரிபார்க்கும் பட்டனை கிளிக் செய்தால்...
+            verifyBtn.addEventListener('click', () => {
+                const enteredPhone = phoneVerifyInput.value.trim();
+                if (enteredPhone === correctPhoneNumber) {
+                    authModal.style.display = 'none';
+                    mainContent.style.display = 'block';
+                } else {
+                    errorMessage.textContent = 'தவறான தொலைபேசி எண்!';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
