@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marked Estimations</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --primary-hover: #34495e;
+            --secondary-color: #e67e22;
+            --secondary-hover: #d35400;
+            --neutral-color: #ecf0f1;
+            --background-light: #f4f6f7;
+            --background-white: #ffffff;
+            --text-dark: #212529;
+            --text-light: #ffffff;
+            --danger-color: #e74c3c;
+            --danger-hover: #c0392b;
+        }
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--background-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            transition: margin-left 0.4s ease;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--primary-color);
+            color: var(--text-light);
+            padding: 15px 25px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        header .logo { font-size: 1.6rem; font-weight: 700; }
+        .header-actions { display: flex; align-items: center; gap: 20px; }
+        header .logout-btn { background: var(--secondary-color); border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; color: var(--text-light); font-weight: 500; transition: background 0.3s, transform 0.2s; }
+        .hamburger { display: none; flex-direction: column; justify-content: space-between; cursor: pointer; width: 30px; height: 21px; position: relative; z-index: 1001; transition: transform 0.3s; }
+        .hamburger span { display: block; height: 3px; width: 100%; background: var(--text-light); border-radius: 2px; transition: all 0.3s ease-in-out; }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+        .hamburger.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+        .sidebar { position: fixed; top: 0; left: 0; width: 250px; height: 100%; background: var(--background-white); box-shadow: 2px 0 10px rgba(0,0,0,0.1); padding-top: 80px; z-index: 999; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar ul li a { display: flex; align-items: center; padding: 18px 25px; text-decoration: none; color: var(--text-dark); transition: background 0.3s, color 0.3s; font-weight: 500; position: relative; }
+        .sidebar ul li a:hover { background: var(--background-light); color: var(--primary-color); }
+        .sidebar ul li a.active { background: var(--primary-color); color: var(--text-light); }
+        .sidebar ul li a.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--secondary-color); }
+        .content { margin-left: 250px; padding: 100px 30px 30px; transition: margin-left 0.4s ease; }
+        @media (max-width: 768px) {
+            .hamburger { display: flex; }
+            header .logout-btn { display: none; }
+            .header-actions { display: none; }
+            .sidebar { left: unset; right: -250px; box-shadow: -2px 0 10px rgba(0,0,0,0.1); }
+            .sidebar.active { right: 0; transform: translateX(0); }
+            .content { margin-left: 0; padding: 100px 20px 20px; }
+        }
+        .filters-container { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; background-color: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .filters-container input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 0.9rem; font-family: 'Poppins', sans-serif; }
+        .filters-container input[type="search"] { flex-grow: 1; min-width: 200px; }
+        .filters-container label { font-weight: 500; }
+        /* NEW Clear button style */
+        .clear-btn {
+            padding: 10px 20px;
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        .clear-btn:hover {
+            background: var(--danger-hover);
+        }
+        .main-container { width: 100%; }
+        .marked-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        .marked-table th, .marked-table td { padding: 15px; text-align: left; background: #ffffff; }
+        .marked-table tr.data-row { border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .marked-table th { background: #1f2937; color: #f3f4f6; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        .marked-table td { border-bottom: 1px solid #e5e7eb; }
+        .marked-table tr.data-row:hover td { background: #f9fafb; }
+        .btn-view, .btn-rebill { padding: 8px 16px; font-weight: 600; border-radius: 9999px; transition: all 0.2s; border: none; cursor: pointer; }
+        .btn-view { background-color: #3b82f6; color: white; }
+        .btn-view:hover { background-color: #2563eb; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-rebill { background-color: #f97316; color: white; }
+        .btn-rebill:hover { background-color: #ea580c; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .marked-btn-modal { padding: 10px 20px; font-weight: 600; border-radius: 9999px; background-color: #ef4444; color: white; border: none; cursor: pointer; transition: background-color 0.3s ease; }
+        .marked-btn-modal:hover { background-color: #dc2626; }
+        .marked-btn-modal.unmarked { background-color: #16a34a; }
+        .marked-btn-modal.unmarked:hover { background-color: #15803d; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(5px); justify-content: center; align-items: center; }
+        .modal-content { background-color: #fff; padding: 2.5rem; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; max-width: 90%; max-height: 90%; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; }
+        .close-button { position: absolute; top: 1rem; right: 1rem; color: #aaa; font-size: 2rem; font-weight: bold; cursor: pointer; }
+        .bill-preview-table-modal table { width: 100%; border-collapse: collapse; }
+        .bill-preview-table-modal th, .bill-preview-table-modal td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        .bill-preview-table-modal th:last-child, .bill-preview-table-modal td:last-child { text-align: right; }
+        .pagination-container { display: flex; justify-content: center; align-items: center; padding: 20px 0; }
+        .pagination-btn { background: var(--background-white); border: 1px solid #ddd; color: var(--primary-color); padding: 8px 16px; margin: 0 4px; cursor: pointer; border-radius: 5px; transition: background 0.3s, color 0.3s; font-weight: 500; }
+        .pagination-btn:hover { background: var(--background-light); }
+        .pagination-btn.active { background: var(--primary-color); color: var(--text-light); border-color: var(--primary-color); }
+        .pagination-btn:disabled { background: #f0f0f0; color: #aaa; cursor: not-allowed; }
+        .flex-box { display: flex; justify-content: space-between; align-items: center; } .flex-row-center { display: flex; justify-content: center; } .text-2xl { font-size: 1.5rem; } .font-bold { font-weight: 700; } .mb-6 { margin-bottom: 1.5rem; } .bg-white { background-color: white; } .p-8 { padding: 2rem; } .rounded-lg { border-radius: 0.5rem; } .shadow-md { box-shadow: 0 4px 6px rgba(0,0,0,0.1); } .ml-2 { margin-left: 0.5rem; } .pb-4 { padding-bottom: 1rem; } .mb-4 { margin-bottom: 1rem; } .text-3xl { font-size: 1.875rem; } .text-gray-800 { color: #1f2937; } .text-sm { font-size: 0.875rem; } .text-gray-500 { color: #6b7280; } .mt-1 { margin-top: 0.25rem; } .text-gray-600 { color: #4b5563; } .my-6 { margin-top: 1.5rem; margin-bottom: 1.5rem; } .font-semibold { font-weight: 600; } .overflow-x-auto { overflow-x: auto; } .min-w-full { min-width: 100%; } .divide-y > * + * { border-top-width: 1px; } .divide-gray-200 > * + * { border-color: #e5e7eb; } .bg-gray-50 { background-color: #f9fafb; } .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; } .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; } .text-left { text-align: left; } .text-xs { font-size: 0.75rem; } .font-medium { font-weight: 500; } .uppercase { text-transform: uppercase; } .tracking-wider { letter-spacing: 0.05em; } .whitespace-nowrap { white-space: nowrap; } .text-right { text-align: right; } .divide-gray-200 > * + * { border-top-width: 1px; border-color: #e5e7eb; } .pt-4 { padding-top: 1rem; } .mt-4 { margin-top: 1rem; } .mt-6 { margin-top: 1.5rem; } .pr-6 { padding-right: 1.5rem; }
+        #messageBox {
+            display: none;
+            padding: 15px;
+            background: #ffefc5;
+            border: 1px solid #e0a800;
+            border-radius: 8px;
+            margin: 20px;
+            margin-top: 50%;
+            font-size: 16px;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Company Logo</div>
+        <div class="header-actions">
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+    <div id="messageBox">
+        <p>This page is not available for mobile.</p>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <ul>
+            <li><a href="index.html">Products</a></li>
+            <li><a href="new_estimation.html">New Estimation</a></li>
+            <li><a href="old_estimation.html">Old Estimations</a></li>
+            <li><a href="mark_estimation.html" class="active">Marked Estimation</a></li>
+            <li><a href="enquiry.html">📞 Enquiry</a></li>
+        </ul>
+    </div>
+
+    <div class="content" id="reminder">
+        <div class="main-container">
+            <h2 class="text-2xl font-bold mb-6">Marked Estimations</h2>
+            
+            <div class="filters-container">
+                <input type="search" id="searchBox" placeholder="Search by Name, Phone, Est No...">
+                <label for="fromDate">From:</label>
+                <input type="date" id="fromDate">
+                <label for="toDate">To:</label>
+                <input type="date" id="toDate">
+                <button id="clearFiltersBtn" class="clear-btn">Clear</button>
+            </div>
+
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <table class="marked-table">
+                    <thead>
+                        <tr>
+                            <th>Marked Number</th>
+                            <th>Est. Number</th>
+                            <th>Date</th>
+                            <th>Customer Name</th>
+                            <th>Phone</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="markedEstimationsTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination-container" id="pagination">
+            </div>
+        </div>
+    </div>
+    
+    <div id="billModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div class="p-8 bg-white rounded-lg shadow-xl">
+                <div class="flex-box border-b pb-4 mb-4">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800">Bill Details</h2>
+                        <div class="text-sm text-gray-500 mt-1">Marked Number: <span id="modalMarkedNumber"></span></div>
+                    </div>
+                    <div>
+                        <div class="text-gray-600">Date: <span id="modalDate"></span></div>
+                    </div>
+                </div>
+                
+                <div class="my-6">
+                    <p class="text-gray-600"><span class="font-semibold">Customer Name:</span> <span id="modalCustomerName"></span></p>
+                    <p class="text-gray-600"><span class="font-semibold">Phone Number:</span> <span id="modalPhoneNumber"></span></p>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 bill-preview-table-modal">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price per Unit</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalBillBody" class="bg-white divide-y divide-gray-200">
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="text-right mt-6 pr-6">
+                    <p class="text-gray-600"><span class="font-semibold">Subtotal:</span> ₹<span id="modalSubtotal">0.00</span></p>
+                    <p class="text-gray-600"><span class="font-semibold">Discount:</span> ₹<span id="modalDiscount">0.00</span></p>
+                    <p class="text-2xl font-bold text-gray-800 border-t pt-4 mt-4">Total Bill: ₹<span id="modalTotal">0.00</span></p>
+                </div>
+
+                <div class="flex-row-center mt-8">
+                    <button id="modalUnmarkBtn" class="marked-btn-modal unmarked">Unmark</button>
+                    <button onclick="printModal()" class="btn-view ml-2">Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.getElementById('hamburger');
+            const sidebar = document.getElementById('sidebar');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const markedEstimationsTableBody = document.getElementById('markedEstimationsTableBody');
+            const billModal = document.getElementById('billModal');
+            const modalCloseBtn = document.querySelector('.close-button');
+            const modalUnmarkBtn = document.getElementById('modalUnmarkBtn');
+            const searchBox = document.getElementById('searchBox');
+            const fromDateEl = document.getElementById('fromDate');
+            const toDateEl = document.getElementById('toDate');
+            const paginationContainer = document.getElementById('pagination');
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn'); // NEW button
+            
+            let allMarkedEstimations = [];
+            let filteredMarkedEstimations = [];
+            let currentPage = 1;
+            const rowsPerPage = 10;
+            let currentMarkedBillData = null;
+
+            const saveState = () => {
+                const state = {
+                    searchTerm: searchBox.value,
+                    fromDate: fromDateEl.value,
+                    toDate: toDateEl.value,
+                    page: currentPage
+                };
+                localStorage.setItem('markedEstimationsState', JSON.stringify(state));
+            };
+
+            const loadState = () => {
+                const savedState = localStorage.getItem('markedEstimationsState');
+                if (savedState) {
+                    const state = JSON.parse(savedState);
+                    searchBox.value = state.searchTerm || '';
+                    fromDateEl.value = state.fromDate || '';
+                    toDateEl.value = state.toDate || '';
+                    currentPage = state.page || 1;
+                }
+            };
+
+            const clearState = () => {
+                localStorage.removeItem('markedEstimationsState');
+            };
+
+            function showMessage(message, isError = false) {
+                const modal = document.createElement('div');
+                modal.style.position = 'fixed';
+                modal.style.top = '50%';
+                modal.style.left = '50%';
+                modal.style.transform = 'translate(-50%, -50%)';
+                modal.style.padding = '20px';
+                modal.style.backgroundColor = isError ? '#ef4444' : '#16a34a';
+                modal.style.color = 'white';
+                modal.style.borderRadius = '8px';
+                modal.style.zIndex = '2000';
+                modal.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+                modal.textContent = message;
+                document.body.appendChild(modal);
+
+                setTimeout(() => {
+                    modal.remove();
+                }, 3000);
+            }
+
+            hamburger.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+            
+            logoutBtn.addEventListener('click', () => {
+                clearState();
+                alert("Filters cleared. Implement your logout logic.");
+            });
+            
+            // NEW: Event listener for the clear button
+            clearFiltersBtn.addEventListener('click', () => {
+                searchBox.value = '';
+                fromDateEl.value = '';
+                toDateEl.value = '';
+                currentPage = 1;
+                clearState();
+                applyFilters();
+            });
+
+            async function initialLoad() {
+                try {
+                    const response = await fetch('get_marked_estimations.php');
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        allMarkedEstimations = result.data.sort((a,b) => b.id - a.id);
+                        applyFilters();
+                    } else {
+                        showMessage("Could not load marked estimations: " + result.message, true);
+                    }
+                } catch (error) {
+                    console.error("Error loading marked estimations:", error);
+                    showMessage("Could not connect to server. Please try again.", true);
+                }
+            }
+
+            const applyFilters = () => {
+                const searchTerm = searchBox.value.toLowerCase();
+                const fromDate = fromDateEl.value;
+                const toDate = toDateEl.value;
+
+                filteredMarkedEstimations = allMarkedEstimations.filter(est => {
+                    const estDate = est.date ? est.date.split(' ')[0] : '';
+                    const matchesSearch = searchTerm === '' ||
+                        est.marked_number.toLowerCase().includes(searchTerm) ||
+                        est.estimation_number.toLowerCase().includes(searchTerm) ||
+                        est.customer_name.toLowerCase().includes(searchTerm) ||
+                        (est.phone_number && est.phone_number.toLowerCase().includes(searchTerm));
+
+                    const matchesDate = 
+                        (!fromDate || (estDate && estDate >= fromDate)) && 
+                        (!toDate || (estDate && estDate <= toDate));
+                        
+                    return matchesSearch && matchesDate;
+                });
+                
+                displayPage(currentPage);
+                saveState();
+            };
+
+            const displayPage = (page) => {
+                currentPage = page;
+                saveState();
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                const paginatedItems = filteredMarkedEstimations.slice(start, end);
+                
+                renderMarkedEstimations(paginatedItems);
+                setupPagination();
+            };
+
+            function renderMarkedEstimations(estimations) {
+                markedEstimationsTableBody.innerHTML = '';
+                 if (estimations.length === 0) {
+                    const row = document.createElement('tr');
+                    const cell = document.createElement('td');
+                    cell.colSpan = 7;
+                    cell.textContent = 'No matching estimations found.';
+                    cell.style.textAlign = 'center';
+                    cell.style.padding = '20px';
+                    row.appendChild(cell);
+                    markedEstimationsTableBody.appendChild(row);
+                    return;
+                }
+                estimations.forEach(est => {
+                    const row = document.createElement('tr');
+                    row.classList.add('data-row');
+                    const date = est.marked_at ? new Date(est.marked_at).toLocaleDateString('en-GB') : 'N/A';
+                    row.innerHTML = `
+                        <td>${est.marked_number}</td>
+                        <td>${est.estimation_number}</td>
+                        <td>${date}</td>
+                        <td>${est.customer_name}</td>
+                        <td>${est.phone_number}</td>
+                        <td>₹${parseFloat(est.total_amount).toFixed(2)}</td>
+                        <td>
+                            <button class="btn-view" data-marked-number="${est.marked_number}">View</button>
+                            <button class="btn-rebill ml-2" data-marked-number="${est.marked_number}">Rebill</button>
+                        </td>
+                    `;
+                    markedEstimationsTableBody.appendChild(row);
+                });
+            }
+
+            const setupPagination = () => {
+                paginationContainer.innerHTML = '';
+                const pageCount = Math.ceil(filteredMarkedEstimations.length / rowsPerPage);
+
+                if (pageCount <= 1) return;
+
+                const prevButton = document.createElement('button');
+                prevButton.classList.add('pagination-btn');
+                prevButton.innerText = 'Previous';
+                prevButton.disabled = currentPage === 1;
+                prevButton.addEventListener('click', () => displayPage(currentPage - 1));
+                paginationContainer.appendChild(prevButton);
+
+                for (let i = 1; i <= pageCount; i++) {
+                    const btn = document.createElement('button');
+                    btn.classList.add('pagination-btn');
+                    btn.innerText = i;
+                    if (i === currentPage) btn.classList.add('active');
+                    btn.addEventListener('click', () => displayPage(i));
+                    paginationContainer.appendChild(btn);
+                }
+
+                const nextButton = document.createElement('button');
+                nextButton.classList.add('pagination-btn');
+                nextButton.innerText = 'Next';
+                nextButton.disabled = currentPage === pageCount;
+                nextButton.addEventListener('click', () => displayPage(currentPage + 1));
+                paginationContainer.appendChild(nextButton);
+            };
+
+            markedEstimationsTableBody.addEventListener('click', (e) => {
+                const target = e.target;
+                const markedNumber = target.dataset.markedNumber;
+                
+                if (target.classList.contains('btn-view')) {
+                    viewMarkedBill(markedNumber);
+                } else if (target.classList.contains('btn-rebill')) {
+                    rebillMarkedBill(markedNumber);
+                }
+            });
+
+            async function viewMarkedBill(markedNumber) {
+                try {
+                    const response = await fetch('get_marked_estimations.php');
+                    const result = await response.json();
+                    if (result.status === 'success' && result.data.length > 0) {
+                        currentMarkedBillData = result.data.find(d => d.marked_number === markedNumber);
+                        if (currentMarkedBillData) {
+                            populateModal(currentMarkedBillData);
+                            billModal.style.display = 'flex';
+                        } else {
+                            showMessage("Bill data not found.", true);
+                        }
+                    } else {
+                        showMessage("Could not load bill data.", true);
+                    }
+                } catch (error) {
+                    console.error("Error loading bill data:", error);
+                    showMessage("Could not load bill data.", true);
+                }
+            }
+
+            function populateModal(data) {
+                document.getElementById('modalMarkedNumber').textContent = data.marked_number;
+                document.getElementById('modalDate').textContent = data.date ? new Date(data.date).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB');
+                document.getElementById('modalCustomerName').textContent = data.customer_name;
+                document.getElementById('modalPhoneNumber').textContent = data.phone_number;
+                
+                const billBody = document.getElementById('modalBillBody');
+                billBody.innerHTML = '';
+                let subtotal = 0;
+                data.items.forEach(item => {
+                    const row = document.createElement('tr');
+                    const totalPrice = item.quantity * parseFloat(item.price_per_unit);
+                    subtotal += totalPrice;
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap">${item.product_name}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${item.quantity}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">₹${parseFloat(item.price_per_unit).toFixed(2)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right">₹${totalPrice.toFixed(2)}</td>
+                    `;
+                    billBody.appendChild(row);
+                });
+
+                document.getElementById('modalSubtotal').textContent = subtotal.toFixed(2);
+                document.getElementById('modalDiscount').textContent = parseFloat(data.discount).toFixed(2);
+                document.getElementById('modalTotal').textContent = parseFloat(data.total_amount).toFixed(2);
+                modalUnmarkBtn.textContent = 'Unmark';
+                modalUnmarkBtn.classList.remove('unmarked');
+            }
+
+            modalCloseBtn.addEventListener('click', () => {
+                billModal.style.display = 'none';
+            });
+
+            window.onclick = function(event) {
+                if (event.target == billModal) {
+                    billModal.style.display = "none";
+                }
+            };
+            
+            modalUnmarkBtn.addEventListener('click', async () => {
+                if (!currentMarkedBillData) return;
+
+                const originalEstNumber = currentMarkedBillData.estimation_number;
+                try {
+                    const response = await fetch('new_estimation.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'unmark', estimation_number: originalEstNumber })
+                    });
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        showMessage("Estimation successfully unmarked!");
+                        billModal.style.display = 'none';
+                        initialLoad();
+                    } else {
+                        showMessage("Error unmarking estimation: " + result.message, true);
+                    }
+                } catch (error) {
+                    console.error("Error communicating with server:", error);
+                    showMessage("Could not connect to server. Please try again.", true);
+                }
+            });
+
+            function rebillMarkedBill(markedNumber) {
+                const bill = allMarkedEstimations.find(est => est.marked_number === markedNumber);
+                if (bill) {
+                    const rebillItems = bill.items.map(item => ({
+                        product_id: item.product_id,
+                        quantity: item.quantity
+                    }));
+
+                    localStorage.setItem("rebillToLoad", JSON.stringify({
+                        rebill_data: rebillItems,
+                        customer_name: bill.customer_name,
+                        phone_number: bill.phone_number,
+                        discount: bill.discount,
+                        enquiry_id: bill.enquiry_id || null
+                    }));
+                    
+                    window.location.href = `new_estimation.html?rebilltoload=true`;
+                } else {
+                    showMessage("Bill data not found.", true);
+                }
+            }
+            
+            searchBox.addEventListener('input', () => {
+                currentPage = 1;
+                applyFilters();
+            });
+            fromDateEl.addEventListener('change', () => {
+                currentPage = 1;
+                applyFilters();
+            });
+            toDateEl.addEventListener('change', () => {
+                currentPage = 1;
+                applyFilters();
+            });
+
+            loadState();
+            initialLoad();
+        });
+
+        function printModal() {
+            const printableArea = document.querySelector('#billModal .p-8').innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Print Bill</title>
+                    <style>
+                        body { font-family: 'Poppins', Arial, sans-serif; padding: 20px; color: #333; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                        th, td { border-bottom: 1px solid #ddd; padding: 12px 8px; text-align: left; }
+                        th { background-color: #f9fafb; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; }
+                        .flex-box { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #ccc; padding-bottom: 1rem; margin-bottom: 1rem; }
+                        .text-right { text-align: right; }
+                        .font-bold { font-weight: 700; }
+                        .text-3xl { font-size: 1.875rem; }
+                        .text-2xl { font-size: 1.5rem; }
+                        .mt-6 { margin-top: 1.5rem; }
+                        .pr-6 { padding-right: 1.5rem; }
+                        .border-t { border-top: 1px solid #ccc; }
+                        .pt-4 { padding-top: 1rem; }
+                        .mt-4 { margin-top: 1rem; }
+                        .flex-row-center { display: none; }
+                    </style>
+                </head>
+                <body onload="window.print(); window.close();">
+                    ${printableArea}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        function checkWidth() {
+    const reminder = document.getElementById("reminder");
+    const messageBox = document.getElementById("messageBox");
+
+    if (window.innerWidth < 1024) {
+      reminder.style.display = "none";
+      messageBox.style.display = "block";
+    } else {
+      reminder.style.display = "block";
+      messageBox.style.display = "none";
+    }
+  }
+
+  // Page load la check pannanum
+  checkWidth();
+
+  // Window resize panna check aagum
+  window.addEventListener("resize", checkWidth);
+    </script>
+</body>
+</html>

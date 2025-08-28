@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Old Estimations</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --primary-hover: #34495e;
+            --secondary-color: #e67e22;
+            --secondary-hover: #d35400;
+            --neutral-color: #ecf0f1;
+            --background-light: #f4f6f7;
+            --background-white: #ffffff;
+            --text-dark: #212529;
+            --text-light: #ffffff;
+            --danger-color: #e74c3c;
+            --danger-hover: #c0392b;
+        }
+        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--background-light); color: var(--text-dark); overflow-x: hidden; transition: margin-left 0.4s ease; }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+        header { display: flex; justify-content: space-between; align-items: center; background: var(--primary-color); color: var(--text-light); padding: 15px 25px; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        header .logo { font-size: 1.6rem; font-weight: 700; }
+        .header-actions { display: flex; align-items: center; gap: 20px; }
+        header .logout-btn { background: var(--secondary-color); border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; color: var(--text-light); font-weight: 500; transition: background 0.3s, transform 0.2s; }
+        header .logout-btn:hover { background: var(--secondary-hover); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .hamburger { display: none; flex-direction: column; justify-content: space-between; cursor: pointer; width: 30px; height: 21px; position: relative; z-index: 1001; transition: transform 0.3s; }
+        .hamburger span { display: block; height: 3px; width: 100%; background: var(--text-light); border-radius: 2px; transition: all 0.3s ease-in-out; }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+        .hamburger.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+        .sidebar { position: fixed; top: 0; left: 0; width: 250px; height: 100%; background: var(--background-white); box-shadow: 2px 0 10px rgba(0,0,0,0.1); padding-top: 80px; z-index: 999; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar ul li a { display: flex; align-items: center; padding: 18px 25px; text-decoration: none; color: var(--text-dark); transition: background 0.3s, color 0.3s; font-weight: 500; position: relative; }
+        .sidebar ul li a:hover { background: var(--background-light); color: var(--primary-color); }
+        .sidebar ul li a.active { background: var(--primary-color); color: var(--text-light); }
+        .sidebar ul li a.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--secondary-color); }
+        .content { margin-left: 250px; padding: 100px 30px 30px; transition: margin-left 0.4s ease; }
+        @media (max-width: 768px) {
+            .hamburger { display: flex; }
+            header .logout-btn { display: none; }
+            .header-actions { display: none; }
+            .sidebar { left: unset; right: -250px; box-shadow: -2px 0 10px rgba(0,0,0,0.1); }
+            .sidebar.active { right: 0; transform: translateX(0); }
+            .content { margin-left: 0; padding: 100px 20px 20px; }
+            .main-container { display: none; }
+            .mobile-message { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; text-align: center; font-size: 1.5rem; color: var(--text-dark); }
+        }
+        @media (min-width: 769px) {
+            .mobile-message { display: none; }
+        }
+        .filters-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filters-container input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        .filters-container input[type="search"] {
+            flex-grow: 1;
+            min-width: 200px;
+        }
+         .filters-container label {
+            font-weight: 500;
+        }
+        /* NEW Clear button style */
+        .clear-btn {
+            padding: 10px 20px;
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        .clear-btn:hover {
+            background: var(--danger-hover);
+        }
+        .main-container { padding: 20px; }
+        .table-container { overflow-x: auto; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f2f2f2; color: #333; }
+        .action-cell { white-space: nowrap; }
+        .action-btn { 
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-right: 5px;
+            transition: background 0.3s;
+        }
+        .view-btn { background-color: #007bff; color: white; }
+        .edit-btn { background-color: #ff9800; color: white; }
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .pagination-btn {
+            background: var(--background-white);
+            border: 1px solid #ddd;
+            color: var(--primary-color);
+            padding: 8px 16px;
+            margin: 0 4px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s;
+            font-weight: 500;
+        }
+        .pagination-btn:hover {
+            background: var(--background-light);
+        }
+        .pagination-btn.active {
+            background: var(--primary-color);
+            color: var(--text-light);
+            border-color: var(--primary-color);
+        }
+        .pagination-btn:disabled {
+            background: #f0f0f0;
+            color: #aaa;
+            cursor: not-allowed;
+        }
+        @media screen and (max-width: 476px) {
+            .main-container { padding: 10px; }
+            .table-container { 
+                overflow-x: auto;
+            }
+            table {
+                min-width: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-message">
+        <p>This page is not available on mobile devices.</p>
+        <p>Please use a tablet or desktop to view.</p>
+    </div>
+
+    <header>
+        <div class="logo">Company Logo</div>
+        <div class="header-actions">
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <div class="sidebar" id="sidebar">
+        <ul>
+            <li><a href="index.html">🏠 Products</a></li>
+            <li><a href="new_estimation.html">📝 New Estimation</a></li>
+            <li><a href="old_estimation.html" class="active">🧾 Old Estimations</a></li>
+            <li><a href="mark_estimation.html">Marked Estimation</a></li>
+            <li><a href="enquiry.html">📞 Enquiry</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="main-container">
+            <h2>Old Estimations</h2>
+
+            <div class="filters-container">
+                <input type="search" id="searchBox" placeholder="Search by Bill No, Name, or Phone...">
+                <label for="fromDate">From:</label>
+                <input type="date" id="fromDate">
+                <label for="toDate">To:</label>
+                <input type="date" id="toDate">
+                <button id="clearFiltersBtn" class="clear-btn">Clear</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bill No</th>
+                            <th>Date</th>
+                            <th>Customer Name</th>
+                            <th>Phone Number</th>
+                            <th>Discount</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="estimationsTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination-container" id="pagination">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.getElementById('hamburger');
+            const sidebar = document.getElementById('sidebar');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const estimationsTableBody = document.getElementById('estimationsTableBody');
+            const searchBox = document.getElementById('searchBox');
+            const fromDateEl = document.getElementById('fromDate');
+            const toDateEl = document.getElementById('toDate');
+            const paginationContainer = document.getElementById('pagination');
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn'); // NEW button
+            
+            let allEstimations = [];
+            let filteredEstimations = [];
+            let currentPage = 1;
+            const rowsPerPage = 15;
+
+            const saveState = () => {
+                const state = {
+                    searchTerm: searchBox.value,
+                    fromDate: fromDateEl.value,
+                    toDate: toDateEl.value,
+                    page: currentPage
+                };
+                localStorage.setItem('oldEstimationsState', JSON.stringify(state));
+            };
+
+            const loadState = () => {
+                const savedState = localStorage.getItem('oldEstimationsState');
+                if (savedState) {
+                    const state = JSON.parse(savedState);
+                    searchBox.value = state.searchTerm || '';
+                    fromDateEl.value = state.fromDate || '';
+                    toDateEl.value = state.toDate || '';
+                    currentPage = state.page || 1;
+                }
+            };
+            
+            const clearState = () => {
+                localStorage.removeItem('oldEstimationsState');
+            };
+
+            hamburger.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+            
+            logoutBtn.addEventListener('click', () => {
+                clearState();
+                alert("State cleared. Add your logout logic here.");
+            });
+
+            // NEW: Event listener for the clear button
+            clearFiltersBtn.addEventListener('click', () => {
+                searchBox.value = '';
+                fromDateEl.value = '';
+                toDateEl.value = '';
+                currentPage = 1;
+                clearState(); // Clear from local storage
+                applyFilters(); // Re-apply empty filters
+            });
+
+            const fetchOldEstimations = async () => {
+                try {
+                    const response = await fetch('fetch_old_estimations.php');
+                    const estimations = await response.json();
+                    allEstimations = estimations.sort((a, b) => b.id - a.id);
+                    applyFilters();
+                } catch (error) {
+                    console.error('Error fetching old estimations:', error);
+                    alert('Failed to load old estimations. Please try again later.');
+                }
+            };
+
+            const applyFilters = () => {
+                const searchTerm = searchBox.value.toLowerCase();
+                const fromDate = fromDateEl.value;
+                const toDate = toDateEl.value;
+
+                filteredEstimations = allEstimations.filter(est => {
+                    const estDate = est.date.split(' ')[0]; 
+                    const matchesSearch = searchTerm === '' ||
+                        est.estimation_number.toLowerCase().includes(searchTerm) ||
+                        est.customer_name.toLowerCase().includes(searchTerm) ||
+                        (est.phone_number && est.phone_number.toLowerCase().includes(searchTerm));
+                    const matchesDate = 
+                        (!fromDate || estDate >= fromDate) && 
+                        (!toDate || estDate <= toDate);
+                    return matchesSearch && matchesDate;
+                });
+                
+                displayPage(currentPage);
+                saveState();
+            };
+
+            const displayPage = (page) => {
+                currentPage = page;
+                saveState();
+                
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                const paginatedItems = filteredEstimations.slice(start, end);
+                
+                renderEstimations(paginatedItems);
+                setupPagination();
+            };
+
+            const renderEstimations = (estimations) => {
+                estimationsTableBody.innerHTML = '';
+                 if (estimations.length === 0) {
+                    const row = document.createElement('tr');
+                    const cell = document.createElement('td');
+                    cell.colSpan = 7;
+                    cell.textContent = 'No matching estimations found.';
+                    cell.style.textAlign = 'center';
+                    row.appendChild(cell);
+                    estimationsTableBody.appendChild(row);
+                    return;
+                }
+
+                estimations.forEach(est => {
+                    const row = document.createElement('tr');
+                    const date = new Date(est.date).toLocaleDateString('en-GB');
+                    row.innerHTML = `
+                        <td>${est.estimation_number}</td>
+                        <td>${date}</td>
+                        <td>${est.customer_name}</td>
+                        <td>${est.phone_number || 'N/A'}</td>
+                        <td>${est.discount}%</td>
+                        <td>₹${parseFloat(est.total_amount).toFixed(2)}</td>
+                        <td class="action-cell">
+                            <button class="action-btn view-btn" data-estimation-number="${est.estimation_number}">View</button>
+                            <button class="action-btn edit-btn" data-estimation-number="${est.estimation_number}">Edit</button>
+                        </td>
+                    `;
+                    estimationsTableBody.appendChild(row);
+                });
+
+                document.querySelectorAll('.view-btn, .edit-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const estNumber = e.target.getAttribute('data-estimation-number');
+                        const mode = e.target.classList.contains('view-btn') ? 'view' : 'edit';
+                        redirectToNewEstimationPage(estNumber, mode);
+                    });
+                });
+            };
+
+            const setupPagination = () => {
+                paginationContainer.innerHTML = '';
+                const pageCount = Math.ceil(filteredEstimations.length / rowsPerPage);
+
+                if (pageCount <= 1) return;
+
+                const prevButton = document.createElement('button');
+                prevButton.classList.add('pagination-btn');
+                prevButton.innerText = 'Previous';
+                prevButton.disabled = currentPage === 1;
+                prevButton.addEventListener('click', () => {
+                    if (currentPage > 1) displayPage(currentPage - 1);
+                });
+                paginationContainer.appendChild(prevButton);
+
+                for (let i = 1; i <= pageCount; i++) {
+                    const btn = document.createElement('button');
+                    btn.classList.add('pagination-btn');
+                    btn.innerText = i;
+                    if (i === currentPage) btn.classList.add('active');
+                    btn.addEventListener('click', () => displayPage(i));
+                    paginationContainer.appendChild(btn);
+                }
+
+                const nextButton = document.createElement('button');
+                nextButton.classList.add('pagination-btn');
+                nextButton.innerText = 'Next';
+                nextButton.disabled = currentPage === pageCount;
+                nextButton.addEventListener('click', () => {
+                    if (currentPage < pageCount) displayPage(currentPage + 1);
+                });
+                paginationContainer.appendChild(nextButton);
+            };
+
+            const redirectToNewEstimationPage = async (estimationNumber, mode) => {
+                try {
+                    const response = await fetch(`fetch_estimation_details.php?estimation_number=${estimationNumber}`);
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        const estimationData = result.data;
+                        const storedProducts = JSON.parse(localStorage.getItem('products')) || [];
+                        const billItems = estimationData.items.map(estItem => {
+                            const product = storedProducts.find(p => p.product_id === estItem.product_id);
+                            return {
+                                product_id: product.product_id,
+                                name: product.name,
+                                price: parseFloat(product.offer_price),
+                                quantity: parseInt(estItem.quantity)
+                            };
+                        });
+                        localStorage.setItem('estimationToLoad', JSON.stringify({ ...estimationData, items: billItems }));
+                        window.location.href = `new_estimation.html?mode=${mode}&est_num=${estimationNumber}`;
+                    } else {
+                        alert(result.message);
+                    }
+                } catch (error) {
+                    console.error('Error fetching estimation details:', error);
+                    alert('Failed to load estimation details. Please try again.');
+                }
+            };
+            
+            searchBox.addEventListener('input', () => {
+                currentPage = 1;
+                applyFilters();
+            });
+            fromDateEl.addEventListener('change', () => {
+                currentPage = 1;
+                applyFilters();
+            });
+            toDateEl.addEventListener('change', () => {
+                currentPage = 1;
+                applyFilters();
+            });
+
+            loadState();
+            fetchOldEstimations();
+        });
+    </script>
+</body>
+</html>

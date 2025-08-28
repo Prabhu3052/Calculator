@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enquiry Management</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --primary-hover: #34495e;
+            --secondary-color: #e67e22;
+            --secondary-hover: #d35400;
+            --neutral-color: #ecf0f1;
+            --background-light: #f4f6f7;
+            --background-white: #ffffff;
+            --text-dark: #212529;
+            --text-light: #ffffff;
+            --danger-color: #e74c3c;
+            --danger-hover: #c0392b;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--background-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            transition: margin-left 0.4s ease;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+
+        /* Header & Sidebar (unchanged) */
+        header { display: flex; justify-content: space-between; align-items: center; background: var(--primary-color); color: var(--text-light); padding: 15px 25px; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        header .logo { font-size: 1.6rem; font-weight: 700; }
+        .header-actions { display: flex; align-items: center; gap: 20px; }
+        header .logout-btn { background: var(--secondary-color); border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; color: var(--text-light); font-weight: 500; transition: background 0.3s, transform 0.2s; }
+        header .logout-btn:hover { background: var(--secondary-hover); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .hamburger { display: none; flex-direction: column; justify-content: space-between; cursor: pointer; width: 30px; height: 21px; position: relative; z-index: 1001; transition: transform 0.3s; }
+        .hamburger span { display: block; height: 3px; width: 100%; background: var(--text-light); border-radius: 2px; transition: all 0.3s ease-in-out; }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+        .hamburger.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+        .sidebar { position: fixed; top: 0; left: 0; width: 250px; height: 100%; background: var(--background-white); box-shadow: 2px 0 10px rgba(0,0,0,0.1); padding-top: 80px; z-index: 999; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar ul li a { display: flex; align-items: center; padding: 18px 25px; text-decoration: none; color: var(--text-dark); transition: background 0.3s, color 0.3s; font-weight: 500; position: relative; }
+        .sidebar ul li a:hover { background: var(--background-light); color: var(--primary-color); }
+        .sidebar ul li a.active { background: var(--primary-color); color: var(--text-light); }
+        .sidebar ul li a.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--secondary-color); }
+        .content { margin-left: 250px; padding: 100px 30px 30px; transition: margin-left 0.4s ease; }
+        @media (max-width: 768px) {
+            .hamburger { display: flex; }
+            header .logout-btn { display: none; }
+            .header-actions { display: none; }
+            .sidebar { left: unset; right: -250px; box-shadow: -2px 0 10px rgba(0,0,0,0.1); }
+            .sidebar.active { right: 0; transform: translateX(0); }
+            .content { margin-left: 0; padding: 100px 20px 20px; }
+        }
+
+        /* NEW Filter Styles */
+        .filters-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filters-container input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        .filters-container input[type="search"] {
+            flex-grow: 1;
+            min-width: 200px;
+        }
+        .filters-container label {
+            font-weight: 500;
+        }
+        .clear-btn {
+            padding: 10px 20px;
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        .clear-btn:hover {
+            background: var(--danger-hover);
+        }
+
+        /* Styles for Enquiry page */
+        .enquiry-container {
+            background: var(--background-white);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .tabs { display: flex; border-bottom: 2px solid var(--neutral-color); margin-bottom: 20px; }
+        .tab-btn { background: transparent; border: none; padding: 10px 20px; cursor: pointer; font-size: 1rem; font-weight: 500; color: var(--text-dark); transition: color 0.3s, border-bottom 0.3s; position: relative; }
+        .tab-btn.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); font-weight: 700; }
+        .tab-count { background: var(--secondary-color); color: var(--text-light); border-radius: 50%; padding: 2px 8px; font-size: 0.8em; font-weight: 700; position: absolute; top: 5px; right: 5px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: var(--background-light); font-weight: 700; }
+        tr:hover { background-color: var(--neutral-color); }
+        .action-button { background: var(--secondary-color); color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; transition: background 0.3s; }
+        .action-button:hover { background: var(--secondary-hover); }
+        .completed-status { color: #28a745; font-weight: 700; }
+        
+        /* NEW Pagination Styles */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .pagination-btn { background: var(--background-white); border: 1px solid #ddd; color: var(--primary-color); padding: 8px 16px; margin: 0 4px; cursor: pointer; border-radius: 5px; transition: background 0.3s, color 0.3s; font-weight: 500; }
+        .pagination-btn:hover { background: var(--background-light); }
+        .pagination-btn.active { background: var(--primary-color); color: var(--text-light); border-color: var(--primary-color); }
+        .pagination-btn:disabled { background: #f0f0f0; color: #aaa; cursor: not-allowed; }
+        #messageBox {
+            display: none;
+            padding: 15px;
+            background: #ffefc5;
+            border: 1px solid #e0a800;
+            border-radius: 8px;
+            margin: 20px;
+            margin-top: 50%;
+            font-size: 16px;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <div id="messageBox">
+        <p>This page is not available for mobile.</p>
+    </div>
+    <header>
+        <div class="logo">Company Logo</div>
+        <div class="header-actions">
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+        <div class="hamburger" id="hamburger">
+            <span></span><span></span><span></span>
+        </div>
+    </header>
+    
+
+    <div class="sidebar" id="sidebar">
+        <ul>
+            <li><a href="index.html">🏠 Products</a></li>
+            <li><a href="new_estimation.html">📝 New Estimation</a></li>
+            <li><a href="old_estimation.html">🧾 Old Estimations</a></li>
+            <li><a href="mark_estimation.html">Marked Estimation</a></li>
+            <li><a href="enquiry.html" class="active">📞 Enquiry</a></li>
+        </ul>
+    </div>
+
+    <div class="content" id="reminder">
+        <div class="enquiry-container">
+            <h2>Enquiry Management</h2>
+
+            <div class="filters-container">
+                <input type="search" id="searchBox" placeholder="Search by Name, Phone, or Enquiry ID...">
+                <label for="fromDate">From:</label>
+                <input type="date" id="fromDate">
+                <label for="toDate">To:</label>
+                <input type="date" id="toDate">
+                <button id="clearFiltersBtn" class="clear-btn">Clear</button>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="pending">
+                    Pending <span class="tab-count" id="pendingCount">0</span>
+                </button>
+                <button class="tab-btn" data-tab="complete">
+                    Complete <span class="tab-count" id="completeCount">0</span>
+                </button>
+            </div>
+
+            <div id="pending" class="tab-content active">
+                <h3>Pending Enquiries</h3>
+                <table id="pendingTable">
+                    <thead><tr><th>S.No</th><th>Enquiry ID</th><th>Customer Name</th><th>Phone Number</th><th>Date</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+                <div class="pagination-container" id="pendingPagination"></div>
+            </div>
+
+            <div id="complete" class="tab-content">
+                <h3>Completed Enquiries</h3>
+                <table id="completeTable">
+                    <thead><tr><th>S.No</th><th>Enquiry ID</th><th>Customer Name</th><th>Phone Number</th><th>Date</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+                <div class="pagination-container" id="completePagination"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const pendingTableBody = document.querySelector('#pendingTable tbody');
+        const completeTableBody = document.querySelector('#completeTable tbody');
+        const pendingCountSpan = document.getElementById('pendingCount');
+        const completeCountSpan = document.getElementById('completeCount');
+        const searchBox = document.getElementById('searchBox');
+        const fromDateEl = document.getElementById('fromDate');
+        const toDateEl = document.getElementById('toDate');
+        const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+        const pendingPagination = document.getElementById('pendingPagination');
+        const completePagination = document.getElementById('completePagination');
+
+        let allEnquiries = [];
+        let filteredEnquiries = [];
+        let pendingCurrentPage = 1;
+        let completeCurrentPage = 1;
+        const rowsPerPage = 10;
+
+        // --- STATE MANAGEMENT FUNCTIONS ---
+        const saveState = () => {
+            const state = {
+                searchTerm: searchBox.value,
+                fromDate: fromDateEl.value,
+                toDate: toDateEl.value,
+                pendingPage: pendingCurrentPage,
+                completePage: completeCurrentPage,
+                activeTab: document.querySelector('.tab-btn.active').dataset.tab || 'pending'
+            };
+            localStorage.setItem('enquiryState', JSON.stringify(state));
+        };
+
+        const loadState = () => {
+            const savedState = localStorage.getItem('enquiryState');
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                searchBox.value = state.searchTerm || '';
+                fromDateEl.value = state.fromDate || '';
+                toDateEl.value = state.toDate || '';
+                pendingCurrentPage = state.pendingPage || 1;
+                completeCurrentPage = state.completePage || 1;
+                
+                // Activate the saved tab
+                const tabToActivate = state.activeTab || 'pending';
+                document.querySelector(`.tab-btn[data-tab="${tabToActivate}"]`).click();
+            }
+        };
+
+        const clearState = () => {
+            localStorage.removeItem('enquiryState');
+        };
+
+        // --- EVENT LISTENERS ---
+        hamburger.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
+        logoutBtn.addEventListener('click', clearState);
+        
+        clearFiltersBtn.addEventListener('click', () => {
+            searchBox.value = '';
+            fromDateEl.value = '';
+            toDateEl.value = '';
+            pendingCurrentPage = 1;
+            completeCurrentPage = 1;
+            clearState();
+            applyFilters();
+        });
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tab = button.dataset.tab;
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                button.classList.add('active');
+                document.getElementById(tab).classList.add('active');
+                saveState(); // Save the active tab state
+            });
+        });
+        
+        searchBox.addEventListener('input', () => {
+            pendingCurrentPage = 1;
+            completeCurrentPage = 1;
+            applyFilters();
+        });
+        fromDateEl.addEventListener('change', () => {
+            pendingCurrentPage = 1;
+            completeCurrentPage = 1;
+            applyFilters();
+        });
+        toDateEl.addEventListener('change', () => {
+            pendingCurrentPage = 1;
+            completeCurrentPage = 1;
+            applyFilters();
+        });
+
+        // --- DATA AND RENDERING LOGIC ---
+        const fetchEnquiries = async () => {
+            try {
+                const response = await fetch('fetch_enquiry.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'get_all' }) });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    allEnquiries = data.enquiries.sort((a,b) => b.id - a.id);
+                    applyFilters();
+                } else {
+                    console.error("Error fetching enquiries:", data.message);
+                }
+            } catch (error) {
+                console.error("Could not connect to server:", error);
+            }
+        };
+
+        const applyFilters = () => {
+            const searchTerm = searchBox.value.toLowerCase();
+            const fromDate = fromDateEl.value;
+            const toDate = toDateEl.value;
+
+            filteredEnquiries = allEnquiries.filter(enq => {
+                const enqDate = enq.date ? enq.date.split(' ')[0] : '';
+                const matchesSearch = searchTerm === '' ||
+                    enq.enquiry_id.toLowerCase().includes(searchTerm) ||
+                    enq.customer_name.toLowerCase().includes(searchTerm) ||
+                    (enq.phone_number && enq.phone_number.includes(searchTerm));
+                const matchesDate = 
+                    (!fromDate || (enqDate && enqDate >= fromDate)) &&
+                    (!toDate || (enqDate && enqDate <= toDate));
+                return matchesSearch && matchesDate;
+            });
+            
+            displayTables();
+            saveState();
+        };
+
+        const displayTables = () => {
+            const pending = filteredEnquiries.filter(e => e.complete == 0);
+            const complete = filteredEnquiries.filter(e => e.complete == 1);
+
+            pendingCountSpan.textContent = pending.length;
+            completeCountSpan.textContent = complete.length;
+
+            displayPageForTable('pending', pending);
+            displayPageForTable('complete', complete);
+        };
+
+        const displayPageForTable = (type, items) => {
+            const currentPage = type === 'pending' ? pendingCurrentPage : completeCurrentPage;
+            const tableBody = type === 'pending' ? pendingTableBody : completeTableBody;
+            const paginationContainer = type === 'pending' ? pendingPagination : completePagination;
+            
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const paginatedItems = items.slice(start, end);
+
+            renderTable(tableBody, paginatedItems, type, start);
+            setupPagination(paginationContainer, type, items);
+        };
+
+        const renderTable = (tableBody, items, type, startIndex) => {
+            tableBody.innerHTML = '';
+            items.forEach((item, index) => {
+                const row = document.createElement('tr');
+                const actionHtml = item.complete == 1
+                    ? `<span class="completed-status">Completed</span>`
+                    : `<button class="action-button move-to-estimate" data-enquiry-id="${item.enquiry_id}">Move to Estimate</button>`;
+                
+                row.innerHTML = `
+                    <td>${startIndex + index + 1}</td>
+                    <td>${item.enquiry_id}</td>
+                    <td>${item.customer_name}</td>
+                    <td>${item.phone_number}</td>
+                    <td>${new Date(item.date).toLocaleDateString('en-GB')}</td>
+                    <td>${actionHtml}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        };
+
+        const setupPagination = (container, type, items) => {
+            container.innerHTML = '';
+            const currentPage = type === 'pending' ? pendingCurrentPage : completeCurrentPage;
+            const pageCount = Math.ceil(items.length / rowsPerPage);
+
+            if (pageCount <= 1) return;
+
+            const prevButton = document.createElement('button');
+            prevButton.classList.add('pagination-btn');
+            prevButton.innerText = 'Previous';
+            prevButton.disabled = currentPage === 1;
+            prevButton.addEventListener('click', () => {
+                if (type === 'pending') pendingCurrentPage--; else completeCurrentPage--;
+                displayTables();
+            });
+            container.appendChild(prevButton);
+
+            for (let i = 1; i <= pageCount; i++) {
+                const btn = document.createElement('button');
+                btn.classList.add('pagination-btn');
+                btn.innerText = i;
+                if (i === currentPage) btn.classList.add('active');
+                btn.addEventListener('click', () => {
+                    if (type === 'pending') pendingCurrentPage = i; else completeCurrentPage = i;
+                    displayTables();
+                });
+                container.appendChild(btn);
+            }
+            
+            const nextButton = document.createElement('button');
+            nextButton.classList.add('pagination-btn');
+            nextButton.innerText = 'Next';
+            nextButton.disabled = currentPage === pageCount;
+            nextButton.addEventListener('click', () => {
+                if (type === 'pending') pendingCurrentPage++; else completeCurrentPage++;
+                displayTables();
+            });
+            container.appendChild(nextButton);
+        };
+
+        // 'Move to Estimate' click handler
+        document.addEventListener('click', async (e) => {
+            if (e.target.classList.contains('move-to-estimate')) {
+                const enquiryId = e.target.dataset.enquiryId;
+                try {
+                    const response = await fetch('fetch_enquiry.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'get_enquiry_details', enquiry_id: enquiryId }) });
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        localStorage.setItem("rebillToLoad", JSON.stringify({
+                            rebill_data: data.enquiry.items,
+                            customer_name: data.enquiry.customer_name,
+                            phone_number: data.enquiry.phone_number,
+                            discount: data.enquiry.discount,
+                            enquiry_id: data.enquiry.enquiry_id
+                        }));
+                        window.location.href = `new_estimation.html?rebilltoload=true`;
+                    } else {
+                        console.error("Error fetching enquiry details:", data.message);
+                    }
+                } catch (error) {
+                    console.error("Could not connect to server:", error);
+                }
+            }
+        });
+        
+        // Initial Load Sequence
+        loadState();
+        fetchEnquiries();
+    });
+
+    function checkWidth() {
+    const reminder = document.getElementById("reminder");
+    const messageBox = document.getElementById("messageBox");
+
+    if (window.innerWidth < 1024) {
+      reminder.style.display = "none";
+      messageBox.style.display = "block";
+    } else {
+      reminder.style.display = "block";
+      messageBox.style.display = "none";
+    }
+  }
+
+  // Page load la check pannanum
+  checkWidth();
+
+  // Window resize panna check aagum
+  window.addEventListener("resize", checkWidth);
+    </script>
+</body>
+</html>
